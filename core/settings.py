@@ -41,7 +41,7 @@ INSTALLED_APPS = [
     'corsheaders',
     'main',
     'resume',
-    'projects',
+    'project',
     'blog',
 ]
 
