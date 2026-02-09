@@ -17,9 +17,9 @@
       --text: #e7e9ee;
       --muted: rgba(231, 233, 238, .72);
       --muted2: rgba(231, 233, 238, .55);
-      --accent: #f2c14f;
+      --accent: rgb(248 213 110 / 99%);
       /* yellow-gold */
-      --accent2: #e7b33f;
+      --accent2: hsl(45, 54%, 58%);
       --shadow: 0 24px 60px rgba(0, 0, 0, .55);
       --radius: 20px;
       --radius2: 16px;
@@ -189,6 +189,19 @@
       word-break: break-word;
     }
 
+    /* Links in sidebar info */
+    .iconbox-link,
+    .text-link {
+      text-decoration: none;
+      color: inherit;
+      display: block;
+    }
+
+    .text-link:hover .v {
+      color: var(--accent);
+      transition: color 0.3s;
+    }
+
     .social {
       display: flex;
       justify-content: center;
@@ -233,9 +246,9 @@
       right: 0;
       z-index: 100;
       border-bottom-left-radius: 20px;
-      border: 1px solid var(--stroke);
+      border: 0.5px solid var(--stroke);
       background: var(--panel);
-      padding: 0 20px;
+      padding: 5px 20px;
     }
 
     .nav {
@@ -512,58 +525,102 @@
     }
 
     /* Resume timeline */
-    .timeline {
+    /* Resume timeline */
+    .timeline-container {
       position: relative;
-      padding-left: 18px;
+      margin-top: 30px;
     }
 
-    .timeline:before {
+    .timeline-container:before {
       content: "";
       position: absolute;
-      left: 8px;
-      top: 6px;
-      bottom: 6px;
+      left: 24px;
+      top: 48px;
+      bottom: 0;
       width: 2px;
-      background: rgba(255, 255, 255, .08);
+      background: rgba(255, 255, 255, .1);
+    }
+
+    .timeline-header {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      position: relative;
+      z-index: 2;
+    }
+
+    .timeline-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      background: rgba(255, 255, 255, .05);
+      border: 1px solid rgba(255, 255, 255, .08);
+      display: grid;
+      place-items: center;
+      color: var(--accent);
+      font-size: 20px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, .2);
+    }
+
+    .section-title.cancel-margin {
+      margin: 0;
+      margin-bottom: 20px;
+    }
+
+    .timeline {
+      position: relative;
+      padding-left: 60px;
+      margin-top: 20px;
+    }
+
+    /* Remove old line */
+    .timeline:before {
+      display: none;
     }
 
     .titem {
       position: relative;
-      padding: 12px 12px 12px 12px;
-      margin: 0 0 10px;
-      border-radius: 18px;
-      background: rgba(0, 0, 0, .16);
-      border: 1px solid rgba(255, 255, 255, .08);
+      padding: 0;
+      margin: 0 0 30px;
+      border-radius: 0;
+      background: transparent;
+      border: none;
     }
 
     .titem:before {
       content: "";
       position: absolute;
-      left: -18px;
-      top: 18px;
-      width: 10px;
-      height: 10px;
-      border-radius: 99px;
+      left: -43px;
+      /* 60px padding - 24px center + offset */
+      top: 5px;
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
       background: var(--accent);
-      box-shadow: 0 0 0 4px rgba(242, 193, 79, .16);
+      box-shadow: 0 0 0 4px var(--bg), 0 0 0 7px rgba(242, 193, 79, .15);
+      z-index: 2;
     }
 
     .trole {
-      font-weight: 900;
-      margin: 0 0 4px;
+      font-weight: 700;
+      font-size: 17px;
+      color: #fff;
+      margin: 0 0 8px;
+      line-height: 1.3;
     }
 
     .tmeta {
-      color: rgba(242, 193, 79, .92);
-      font-weight: 800;
-      font-size: 12px;
-      margin: 0 0 6px;
+      color: var(--text);
+      font-weight: 600;
+      font-size: 13px;
+      margin: 0 0 10px;
+      display: block;
     }
 
     .tinfo {
       color: var(--muted);
       line-height: 1.7;
-      font-size: 13px;
+      font-size: 14px;
       margin: 0;
     }
 
@@ -668,8 +725,9 @@
     }
 
     .proj:hover {
-      transform: translateY(-4px);
-      border-color: rgba(242, 193, 79, .3);
+      transform: translateY(-8px);
+      border-color: var(--accent);
+      box-shadow: 0 10px 25px -5px rgba(242, 193, 79, 0.4), 0 8px 10px -6px rgba(242, 193, 79, 0.1);
     }
 
     .thumb {
@@ -677,6 +735,48 @@
       background: var(--panel2);
       position: relative;
       overflow: hidden;
+    }
+
+    .proj-links {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.4);
+      backdrop-filter: blur(2px);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 20px;
+      opacity: 0;
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      z-index: 10;
+      border-radius: var(--radius);
+    }
+
+    .proj:hover .proj-links {
+      opacity: 1;
+    }
+
+    .proj-links a {
+      color: #fff;
+      font-size: 24px;
+      background: rgba(255, 255, 255, 0.1);
+      width: 50px;
+      height: 50px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      border-radius: 50%;
+      text-decoration: none;
+      transition: all 0.3s ease;
+    }
+
+    .proj-links a:hover {
+      background: var(--accent);
+      color: var(--dark);
+      transform: scale(1.1);
     }
 
     .thumb img {
@@ -725,7 +825,7 @@
     .proj-tags {
       display: flex;
       flex-wrap: wrap;
-      gap: 6px;
+      gap: 10px;
     }
 
     .tag {
@@ -741,7 +841,7 @@
     .posts {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 14px;
+      gap: 20px;
     }
 
     @media (max-width: 900px) {
@@ -756,6 +856,9 @@
       border: 1px solid rgba(255, 255, 255, .08);
       background: rgba(0, 0, 0, .16);
       transition: .18s ease;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
     }
 
     .post:hover {
@@ -799,17 +902,27 @@
     }
 
     .post .date {
-      color: rgba(255, 255, 255, .55);
-      font-weight: 800;
+      color: #949496;
       font-size: 12px;
       margin-bottom: 6px;
     }
 
     .post h3 {
       margin: 0 0 8px;
-      font-size: 18px;
+      font-size: 20 px;
       font-weight: 950;
+      color: var(--text);
+      transition: color 0.3s ease;
+    }
+
+    .post-link {
+      text-decoration: none;
+      display: block;
+    }
+
+    .post-link:hover .post h3 {
       color: var(--accent);
+      text-shadow: 0 0 8px rgba(--accent);
     }
 
     .post p {
@@ -837,6 +950,18 @@
     .card.soft {
       display: block;
       padding: 40px;
+    }
+
+    .contact-card {
+      margin-top: 60px;
+    }
+
+    #contact-message {
+      width: 100%;
+      height: 150px;
+      /* fixed height */
+      resize: none;
+      /* disables resize */
     }
 
     .form {
@@ -984,37 +1109,44 @@
 
         <div class="info">
           <div class="info-row">
-            <div class="iconbox" title="Email">
-              <!-- mail -->
-              <!-- <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M4 4h16v16H4z" />
-                <path d="m4 6 8 7 8-7" />
-              </svg> -->
-              <i class="fa-regular fa-envelope"></i>
-            </div>
+            <a href="#" id="profile-email-link" class="iconbox-link">
+              <div class="iconbox" title="Email">
+                <i class="fa-regular fa-envelope"></i>
+              </div>
+            </a>
             <div>
               <div class="k">Email</div>
-              <div id="profile-email" class="v"></div>
+              <a href="#" id="profile-email-text-link" class="text-link">
+                <div id="profile-email" class="v"></div>
+              </a>
             </div>
           </div>
 
           <div class="info-row">
-            <div class="iconbox" title="LinkedIn">
-              <i class="fa-brands fa-linkedin-in"></i>
-            </div>
+            <a href="#" id="profile-linkedin-link" class="iconbox-link">
+              <div class="iconbox" title="LinkedIn">
+                <i class="fa-brands fa-linkedin-in"></i>
+              </div>
+            </a>
             <div>
               <div class="k">LinkedIn</div>
-              <div id="profile-linkedin" class="v"></div>
+              <a href="#" id="profile-linkedin-text-link" class="text-link">
+                <div id="profile-linkedin" class="v"></div>
+              </a>
             </div>
           </div>
 
           <div class="info-row">
-            <div class="iconbox" title="GitHub">
-              <i class="fa-brands fa-github"></i>
-            </div>
+            <a href="#" id="profile-github-link" class="iconbox-link">
+              <div class="iconbox" title="GitHub">
+                <i class="fa-brands fa-github"></i>
+              </div>
+            </a>
             <div>
               <div class="k">GitHub</div>
-              <div id="profile-github" class="v"></div>
+              <a href="#" id="profile-github-text-link" class="text-link">
+                <div id="profile-github" class="v"></div>
+              </a>
             </div>
           </div>
 
@@ -1119,14 +1251,28 @@
           <div class="h1">Resume</div>
           <div class="underline"></div>
 
-          <div class="section-title">Education</div>
-          <div class="timeline" id="education-timeline">
-            <!-- Education items will be loaded here -->
+          <div class="timeline-container">
+            <div class="timeline-header">
+              <div class="timeline-icon">
+                <i class="fa-solid fa-book-open"></i>
+              </div>
+              <div class="section-title cancel-margin">Education</div>
+            </div>
+            <div class="timeline" id="education-timeline">
+              <!-- Education items will be loaded here -->
+            </div>
           </div>
 
-          <div class="section-title">Experience</div>
-          <div class="timeline" id="experience-timeline">
-            <!-- Experience items will be loaded here -->
+          <div class="timeline-container">
+            <div class="timeline-header">
+              <div class="timeline-icon">
+                <i class="fa-solid fa-book-open"></i>
+              </div>
+              <div class="section-title cancel-margin">Experience</div>
+            </div>
+            <div class="timeline" id="experience-timeline">
+              <!-- Experience items will be loaded here -->
+            </div>
           </div>
 
           <div class="section-title">My Skills</div>
@@ -1169,7 +1315,7 @@
           <div class="underline"></div>
 
 
-          <div class="card soft">
+          <div class="contact-card">
             <form class="form" id="contactForm">
               <div class="field">
                 <label>FULL NAME</label>
@@ -1219,17 +1365,66 @@
       }
     }
 
+    function formatDate(dateString) {
+      if (!dateString) return 'Present';
+      const options = { year: 'numeric', month: 'long', day: 'numeric' };
+      return new Date(dateString).toLocaleDateString('en-US', options);
+    }
+
+    function formatYear(dateString) {
+      if (!dateString) return 'Present';
+      return new Date(dateString).getFullYear();
+    }
+
+    function formatMonthYear(dateString) {
+      if (!dateString) return 'Present';
+      const options = { year: 'numeric', month: 'short' };
+      return new Date(dateString).toLocaleDateString('en-US', options);
+    }
+
+    function formatBlogDate(dateString) {
+      if (!dateString) return '';
+      const options = { year: 'numeric', month: 'short', day: 'numeric' };
+      return new Date(dateString).toLocaleDateString('en-US', options);
+    }
+
     async function initPortfolio() {
       // Profile
       const profile = await fetchAPI('profile');
       if (profile) {
         document.getElementById('profile-name').textContent = profile.name;
         document.getElementById('profile-title').textContent = profile.title;
+
+        // Email
+        const emailLink = `mailto:${profile.email}`;
         document.getElementById('profile-email').textContent = profile.email;
+        document.getElementById('profile-email-link').href = emailLink;
+        document.getElementById('profile-email-text-link').href = emailLink;
+
+        // LinkedIn
+        // Use linkedin_url if available, otherwise fallback to constructing it or using the handle
+        let linkedinRef = profile.linkedin_url || profile.linkedin;
+        if (linkedinRef && !linkedinRef.startsWith('http')) linkedinRef = `https://${linkedinRef}`;
+
         document.getElementById('profile-linkedin').textContent = profile.linkedin;
+        document.getElementById('profile-linkedin-link').href = linkedinRef;
+        document.getElementById('profile-linkedin-text-link').href = linkedinRef;
+        document.getElementById('profile-linkedin-link').target = "_blank";
+        document.getElementById('profile-linkedin-text-link').target = "_blank";
+
+        // GitHub
+        // Use github_url if available
+        let githubRef = profile.github_url || profile.github;
+        if (githubRef && !githubRef.startsWith('http')) githubRef = `https://${githubRef}`;
+
         document.getElementById('profile-github').textContent = profile.github;
+        document.getElementById('profile-github-link').href = githubRef;
+        document.getElementById('profile-github-text-link').href = githubRef;
+        document.getElementById('profile-github-link').target = "_blank";
+        document.getElementById('profile-github-text-link').target = "_blank";
+
         document.getElementById('profile-location').textContent = profile.location;
-        document.getElementById('profile-birthday').textContent = profile.birthday;
+        document.getElementById('profile-birthday').textContent = formatDate(profile.birthday);
         if (profile.avatar) document.getElementById('profile-avatar').src = profile.avatar;
 
         const aboutHTML = `
@@ -1245,13 +1440,11 @@
       if (services) {
         const grid = document.getElementById('services-grid');
         grid.innerHTML = services.map(s => {
-          let icon = s.icon_svg;
-          if (!icon.includes('<svg')) {
-            icon = `<svg viewBox="0 0 24 24" fill="currentColor">${icon}</svg>`;
-          }
           return `
             <div class="card">
-              <div class="mini-ico">${icon}</div>
+              <div class="mini-ico">
+                <i class="${s.icon_class}" style="font-size: 24px;"></i>
+              </div>
               <div class="card-content">
                 <div class="card-title">${s.title}</div>
                 <p class="card-desc">${s.description}</p>
@@ -1291,6 +1484,19 @@
         initClients();
       }
 
+      // Social Links (Dynamic)
+      const socialLinks = await fetchAPI('social-links');
+      if (socialLinks) {
+        const socialContainer = document.querySelector('.social');
+        if (socialContainer) {
+          socialContainer.innerHTML = socialLinks.map(s => `
+            <a class="soc" href="${s.url}" title="${s.name}" target="_blank">
+              <i class="${s.icon}"></i>
+            </a>
+          `).join('');
+        }
+      }
+
       // Categories (New dynamic integration)
       const categories = await fetchAPI('categories');
       if (categories) {
@@ -1299,6 +1505,7 @@
           categories.map(c => `
             <button class="chip" data-filter="${c.name.toLowerCase()}">${c.name}</button>
           `).join('');
+        console.log(categories);
       }
 
       // Skills
@@ -1316,44 +1523,78 @@
       // Resume (Education & Experience)
       const education = await fetchAPI('education');
       if (education) {
-        document.getElementById('education-timeline').innerHTML = education.map(e => `
-          <div class="titem">
-            <p class="trole">${e.degree}</p>
-            <p class="tmeta">${e.date_range}</p>
-            <p class="tinfo">${e.description}</p>
-          </div>
-        `).join('');
+        document.getElementById('education-timeline').innerHTML = education.map(e => {
+          const startYear = formatYear(e.start_date);
+          const endYear = e.end_date ? formatYear(e.end_date) : 'Present';
+          return `
+              <div class="titem">
+                <p class="trole">${e.institution} - ${e.degree}</p>
+                <div class="tmeta" style="font-size: 13px; opacity: 0.9; margin-bottom: 8px; color: var(--accent);">${startYear} — ${endYear}</div>
+                <p class="tinfo">${e.description}</p>
+              </div>
+            `;
+        }).join('');
       }
 
       const experience = await fetchAPI('experience');
       if (experience) {
-        document.getElementById('experience-timeline').innerHTML = experience.map(e => `
-          <div class="titem">
-            <p class="trole">${e.role}</p>
-            <p class="tmeta">${e.date_range}</p>
-            <p class="tinfo">${e.description}</p>
-          </div>
-        `).join('');
+        document.getElementById('experience-timeline').innerHTML = experience.map(e => {
+          const startDate = formatMonthYear(e.start_date);
+          const endDate = e.end_date ? formatMonthYear(e.end_date) : 'Present';
+          return `
+              <div class="titem">
+                <p class="trole">${e.company || ''} - ${e.role}</p>
+                <div class="tmeta" style="font-size: 13px; opacity: 0.9; margin-bottom: 8px; color: var(--accent);">${startDate} — ${endDate}</div>
+                <p class="tinfo">${e.description}</p>
+              </div>
+            `;
+        }).join('');
       }
 
       // Projects
       const projectsData = await fetchAPI('projects');
       if (projectsData) {
         const grid = document.getElementById('projects-grid');
-        grid.innerHTML = projectsData.map(p => `
-          <article class="proj" data-cat="${p.category_name.toLowerCase()}">
+        grid.innerHTML = projectsData.map(p => {
+
+          let linksHtml = '';
+          if (p.github_link) {
+            linksHtml += `<a href="${p.github_link}" target="_blank" title="GitHub Code"><i class="fa-brands fa-github"></i></a>`;
+          }
+          if (p.live_link) {
+            linksHtml += `<a href="${p.live_link}" target="_blank" title="Live Demo"><i class="fa-solid fa-eye"></i></a>`;
+          }
+
+
+          // Store all categories (space-separated, lowercase) for filtering
+          const allCategories = p.categories_list && p.categories_list.length > 0
+            ? p.categories_list.map(c => c.toLowerCase()).join(' ')
+            : 'all';
+
+          // Display all categories as comma-separated list
+          const categoriesDisplay = p.categories_list && p.categories_list.length > 0
+            ? p.categories_list.join(', ')
+            : 'Uncategorized';
+
+
+          return `
+          <article class="proj" data-cat="${allCategories}">
             <div class="thumb">
               ${p.image ? `<img src="${p.image}" style="width:100%; height:100%; object-fit:cover;">` : `<small>Project Preview</small>`}
+              <div class="proj-links">
+                ${linksHtml}
+              </div>
             </div>
             <div class="proj-body">
               <h3 class="proj-title">${p.title}</h3>
-              <p class="proj-meta">Category: ${p.category_name}</p>
+              <p class="proj-meta">Categories: ${categoriesDisplay}</p>
               <div class="proj-tags">
                 ${p.tags_list.map(t => `<span class="tag">${t}</span>`).join('')}
               </div>
             </div>
           </article>
-        `).join('');
+        `;
+        }).join('');
       }
 
       // Blog
@@ -1361,22 +1602,18 @@
       if (posts) {
         const grid = document.getElementById('blog-posts');
         grid.innerHTML = posts.map(p => `
-          <article class="post">
-            <div class="img">
-              ${p.image ? `<img src="${p.image}" style="width:100%; height:100%; object-fit:cover;">` : `<span>${p.category}</span>`}
-            </div>
-            <div class="body">
-              <div class="date">Post • ${p.date}</div>
-              <h3>${p.title}</h3>
-              <p>${p.summary}</p>
-              <a class="more" href="#">
-                Read more
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <path d="M7 17L17 7"/><path d="M9 7h8v8"/>
-                </svg>
-              </a>
-            </div>
-          </article>
+          <a href="${p.url || '#'}" class="post-link" target="_blank" rel="noopener noreferrer">
+            <article class="post">
+              <div class="img">
+                ${p.image ? `<img src="${p.image}" style="width:100%; height:100%; object-fit:cover;">` : `<span>${p.category}</span>`}
+              </div>
+              <div class="body">
+                <div class="date">Post • ${formatBlogDate(p.date)}</div>
+                <h3>${p.title}</h3>
+                <p>${p.summary}</p>
+              </div>
+            </article>
+          </a>
         `).join('');
       }
     }
