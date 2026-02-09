@@ -13,9 +13,8 @@ class Category(models.Model):
 
 class Project(models.Model):
     title = models.CharField(max_length=100)
-    category = models.ForeignKey(
+    categories = models.ManyToManyField(
         Category,
-        on_delete=models.CASCADE,
         related_name='projects'
     )
     description = models.TextField()
