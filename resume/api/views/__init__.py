@@ -1,11 +1,10 @@
-from .education import EducationSerializer
-from .expriance import ExperienceSerializer 
-from .skills import SkillSerializer
-
+from .education import EducationViewSet
+from .expriance import ExperienceViewSet
+from .skills import SkillViewSet
 __all__ = [
-    'EducationSerializer',
-    'ExperienceSerializer',
-    'SkillSerializer'
+    'EducationViewSet',
+    'ExperienceViewSet',
+    'SkillViewSet'
 ]
 
 

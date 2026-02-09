@@ -1,6 +1,6 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
-from .views import ExperienceViewSet, EducationViewSet, SkillViewSet
+from resume.api.views import ExperienceViewSet, EducationViewSet, SkillViewSet
 
 router = DefaultRouter()
 router.register(r'experience', ExperienceViewSet)
