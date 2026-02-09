@@ -22,7 +22,7 @@ class Profile(models.Model):
 class Service(models.Model):
     title = models.CharField(max_length=100)
     description = models.TextField(blank=True)
-    icon_svg = models.TextField(help_text="Paste SVG path or full SVG here")
+    icon_class = models.CharField(max_length=100, help_text="Font Awesome class, e.g. fa-solid fa-code", default="fa-solid fa-code")
 
     def __str__(self):
         return self.title
@@ -49,3 +49,29 @@ class ContactMessage(models.Model):
     
     class Meta:
         ordering = ['-created_at']
+
+
+class Client(models.Model):
+    name = models.CharField(max_length=100)
+    logo = models.ImageField(upload_to='clients/')
+    url = models.URLField(blank=True, null=True)
+    order = models.PositiveIntegerField(default=0)
+
+    class Meta:
+        ordering = ['order']
+
+    def __str__(self):
+        return self.name
+
+
+class SocialLink(models.Model):
+    name = models.CharField(max_length=50, help_text="e.g. Facebook, Twitter")
+    icon = models.CharField(max_length=100, help_text="Font Awesome class, e.g. fa-brands fa-facebook")
+    url = models.URLField()
+    order = models.PositiveIntegerField(default=0)
+
+    class Meta:
+        ordering = ['order']
+
+    def __str__(self):
+        return self.name
