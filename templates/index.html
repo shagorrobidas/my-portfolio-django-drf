@@ -914,7 +914,7 @@
         <div class="profile">
           <div class="avatar">
             <img id="profile-avatar"
-              src="https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=400&q=60"
+              src=""
               alt="Profile" />
           </div>
           <div id="profile-name" class="name">Your Name</div>
@@ -1195,7 +1195,7 @@
 
   <script>
     // ===== API INTEGRATION =====
-    const API_BASE = 'http://127.0.0.1:8001/api/v1/';
+    const API_BASE = 'http://127.0.0.1:8000/api/v1';
 
     async function fetchAPI(endpoint) {
       try {
@@ -1225,6 +1225,7 @@
           <p class="p">${profile.about_text_extra}</p>
         `;
         document.getElementById('about-content').innerHTML = aboutHTML;
+        console.log(profile);
       }
 
       // Services
