@@ -1,8 +1,9 @@
 from rest_framework import serializers
 from project.models import Project
 
+
 class ProjectSerializer(serializers.ModelSerializer):
-    category_name = serializers.ReadOnlyField(source='category.name')
+    categories_list = serializers.SerializerMethodField()
     tags_list = serializers.SerializerMethodField()
 
     class Meta:
@@ -10,15 +11,18 @@ class ProjectSerializer(serializers.ModelSerializer):
         fields = [
             'id',
             'title',
-            'category',
-            'category_name',
+            'categories',
+            'categories_list',
             'description',
             'image',
             'tags',
-            'github_url',
-            'live_url',
+            'github_link',
+            'live_link',
             'tags_list'
         ]
+
+    def get_categories_list(self, obj):
+        return [cat.name for cat in obj.categories.all()]
 
     def get_tags_list(self, obj):
         return obj.get_tags_list()
