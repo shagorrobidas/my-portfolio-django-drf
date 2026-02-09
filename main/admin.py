@@ -3,8 +3,22 @@ from main.models import (
     ContactMessage, 
     Profile, 
     Service, 
-    Testimonial 
+    Testimonial,
+    Client,
+    SocialLink
 )
+
+@admin.register(Client)
+class ClientAdmin(admin.ModelAdmin):
+    list_display = ('name', 'url', 'order')
+    list_editable = ('order',)
+    search_fields = ('name',)
+
+@admin.register(SocialLink)
+class SocialLinkAdmin(admin.ModelAdmin):
+    list_display = ('name', 'url', 'order')
+    list_editable = ('order',)
+    search_fields = ('name',)
 
 @admin.register(Profile)
 class ProfileAdmin(admin.ModelAdmin):
