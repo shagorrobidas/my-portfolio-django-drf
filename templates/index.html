@@ -4,7 +4,18 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Dark Portfolio UI</title>
+  <title id="main-title">Dark Portfolio UI</title>
+
+  <!-- SEO & Social Sharing Meta Tags -->
+  <meta name="description" id="meta-desc" content="Portfolio of a skilled developer." />
+  <meta property="og:title" id="og-title" content="Dark Portfolio UI" />
+  <meta property="og:description" id="og-desc" content="Developer Portfolio" />
+  <meta property="og:image" id="og-image" content="" />
+  <meta property="og:type" content="website" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" id="twitter-title" content="Dark Portfolio UI" />
+  <meta name="twitter:description" id="twitter-desc" content="Developer Portfolio" />
+  <meta name="twitter:image" id="twitter-image" content="" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
   <style>
     :root {
@@ -1392,6 +1403,30 @@
       // Profile
       const profile = await fetchAPI('profile');
       if (profile) {
+        // Dynamic Page Title
+        const mainTitle = document.getElementById('main-title');
+        if (mainTitle) {
+          const fullTitle = `${profile.name} | ${profile.title}`;
+          mainTitle.textContent = fullTitle;
+
+          // Update Meta Tags
+          const updateMeta = (id, content) => {
+            const el = document.getElementById(id);
+            if (el) el.setAttribute('content', content);
+          };
+
+          updateMeta('og-title', fullTitle);
+          updateMeta('twitter-title', fullTitle);
+          updateMeta('meta-desc', profile.about_text.substring(0, 160));
+          updateMeta('og-desc', profile.about_text.substring(0, 160));
+          updateMeta('twitter-desc', profile.about_text.substring(0, 160));
+
+          if (profile.avatar) {
+            updateMeta('og-image', profile.avatar);
+            updateMeta('twitter-image', profile.avatar);
+          }
+        }
+
         document.getElementById('profile-name').textContent = profile.name;
         document.getElementById('profile-title').textContent = profile.title;
 
@@ -1402,7 +1437,6 @@
         document.getElementById('profile-email-text-link').href = emailLink;
 
         // LinkedIn
-        // Use linkedin_url if available, otherwise fallback to constructing it or using the handle
         let linkedinRef = profile.linkedin_url || profile.linkedin;
         if (linkedinRef && !linkedinRef.startsWith('http')) linkedinRef = `https://${linkedinRef}`;
 
@@ -1413,7 +1447,6 @@
         document.getElementById('profile-linkedin-text-link').target = "_blank";
 
         // GitHub
-        // Use github_url if available
         let githubRef = profile.github_url || profile.github;
         if (githubRef && !githubRef.startsWith('http')) githubRef = `https://${githubRef}`;
 
@@ -1425,14 +1458,17 @@
 
         document.getElementById('profile-location').textContent = profile.location;
         document.getElementById('profile-birthday').textContent = formatDate(profile.birthday);
-        if (profile.avatar) document.getElementById('profile-avatar').src = profile.avatar;
+
+        if (profile.avatar) {
+          document.getElementById('profile-avatar').src = profile.avatar;
+        }
 
         const aboutHTML = `
           <p class="p">${profile.about_text}</p>
           <p class="p">${profile.about_text_extra}</p>
         `;
         document.getElementById('about-content').innerHTML = aboutHTML;
-        console.log(profile);
+        console.log("Profile loaded:", profile);
       }
 
       // Services
