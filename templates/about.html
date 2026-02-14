@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}About | Dark Portfolio UI{% endblock %}
+{% block title %}About{% endblock %}
 
 {% block content %}
 <!-- ABOUT -->
@@ -40,10 +40,65 @@
         </div>
     </div>
 </section>
+</section>
+
+<!-- Testimonial Modal -->
+<div class="modal-overlay" id="testimonialModal">
+    <div class="modal-content testimonial-modal-content">
+        <button class="modal-close-icon" onclick="closeTestimonialModal()">
+            <i class="fa-solid fa-xmark"></i>
+        </button>
+        <div class="modal-grid">
+            <div class="modal-left">
+                <div class="modal-tava">
+                    <img src="" alt="" id="m-t-img">
+                </div>
+            </div>
+            <div class="modal-right">
+                <div class="modal-header-info">
+                    <div class="modal-quote-icon">
+                        <i class="fa-solid fa-quote-left"></i>
+                    </div>
+                    <div>
+                        <div class="modal-tname" id="m-t-name"></div>
+                        <div class="modal-trole" id="m-t-role"></div>
+                    </div>
+                </div>
+                <div class="modal-desc" id="m-t-desc"></div>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}
 
 {% block scripts %}
 <script>
+    const tModal = document.getElementById('testimonialModal');
+
+    function openTestimonialModal(data) {
+        document.getElementById('m-t-img').src = data.image || '/static/images/default-avatar.png';
+        document.getElementById('m-t-name').innerText = data.client_name;
+        // Assuming role isn't in data, defaulting or using logic if added later. 
+        // For now, using a placeholder or keeping it empty if not provided.
+        document.getElementById('m-t-role').innerText = data.client_company || 'Client';
+        document.getElementById('m-t-desc').innerText = data.text;
+
+        tModal.style.display = 'flex';
+        void tModal.offsetWidth;
+        tModal.classList.add('active');
+    }
+
+    function closeTestimonialModal() {
+        tModal.classList.remove('active');
+        setTimeout(() => {
+            tModal.style.display = 'none';
+        }, 300);
+    }
+
+    tModal.addEventListener('click', (e) => {
+        if (e.target === tModal) closeTestimonialModal();
+    });
+
     async function initAbout() {
         const profile = await fetchAPI('profile');
         if (profile) {
@@ -68,11 +123,12 @@
 
         const testimonials = await fetchAPI('testimonials');
         if (testimonials) {
-            document.getElementById('track').innerHTML = testimonials.map(t => `
-        <div class="tcard">
+            const track = document.getElementById('track');
+            track.innerHTML = testimonials.map((t, index) => `
+        <div class="tcard" onclick='openTestimonialModal(${JSON.stringify(t)})'>
           <div class="tcard-inner">
             <div class="tava">
-              ${t.client_initials ? `<span>${t.client_initials}</span>` : `<img src="${t.client_image}" alt="${t.client_name}">`}
+              <img src="${t.image || '/static/images/default-avatar.png'}" alt="${t.client_name}">
             </div>
             <div class="tname">${t.client_name}</div>
             <p class="ttext">${t.text}</p>
@@ -91,38 +147,172 @@
         }
     }
 
+    function setupCustomScroll(slider, track, scrollBar, scrollTrack) {
+        if (!slider || !track || !scrollBar || !scrollTrack) return;
+
+        let isDragging = false;
+        let startX;
+        let scrollLeft;
+
+        const updateBar = () => {
+            const total = track.scrollWidth - slider.clientWidth;
+            if (total <= 0) {
+                scrollTrack.style.display = 'none';
+                return;
+            }
+            scrollTrack.style.display = 'block';
+
+            const maxScroll = track.scrollWidth - slider.clientWidth;
+            const scrollRatio = slider.scrollLeft / maxScroll;
+
+            // Bar width is 30%, so usable track width is 70%
+            const maxBarLeft = 100 - 30;
+            const newLeft = scrollRatio * maxBarLeft;
+
+            scrollBar.style.width = '30%';
+            scrollBar.style.left = `${newLeft}%`;
+        };
+
+        // Click on track to jump
+        scrollTrack.addEventListener('mousedown', (e) => {
+            if (e.target === scrollBar) return;
+            const rect = scrollTrack.getBoundingClientRect();
+            const clickX = e.clientX - rect.left;
+            const trackWidth = rect.width;
+
+            const clickRatio = clickX / trackWidth;
+            const maxScroll = track.scrollWidth - slider.clientWidth;
+
+            slider.scrollTo({
+                left: clickRatio * maxScroll,
+                behavior: 'smooth'
+            });
+        });
+
+        // Dragging the bar
+        scrollBar.addEventListener('mousedown', (e) => {
+            isDragging = true;
+            startX = e.pageX - scrollBar.offsetLeft;
+            // Capture initial scroll state? No, we need where we clicked relative to bar?
+            // Actually standard drag logic:
+            // We need the mouse X position relative to the page, and the current scrollLeft.
+            // But here we are dragging the BAR.
+            // Let's stick to the logic that was working in initClients but generalize it.
+
+            // In initClients: startX = e.pageX - bar.offsetLeft; 
+            // This suggests startX is the click position relative to the bar's left edge? 
+            // Wait, bar.offsetLeft is relative to the parent (track).
+            // e.pageX is global. This might be slightly buggy if the parent has offset.
+            // Better approach for dragging scrollbar:
+
+            startX = e.clientX;
+            const barRect = scrollBar.getBoundingClientRect();
+            const trackRect = scrollTrack.getBoundingClientRect();
+            // Offset of click within the bar
+            const offsetX = e.clientX - barRect.left;
+
+            // We want to keep the bar under the mouse at the same offset.
+            // So on move, newBarLeft = mouseX - trackLeft - offsetX.
+
+            // Let's look at the original logic again to minimize risk:
+            // startX = e.pageX - bar.offsetLeft;
+            // moveX = e.clientX - rect.left - (barWidth / 2); // This centers it?
+            // The original logic had:
+            // mousedown: startX = e.pageX - bar.offsetLeft;
+            // mousemove: moveX = e.clientX - rect.left - (barWidth / 2);
+            // This looks like it was recentering the bar on the mouse, which is a bit jarring if you grab the edge.
+
+            // Let's improve it slightly to standard drag behavior:
+            scrollBar.style.cursor = 'grabbing';
+            e.preventDefault();
+
+            const onMouseMove = (moveEvent) => {
+                const trackRect = scrollTrack.getBoundingClientRect();
+                const trackWidth = trackRect.width;
+                const barWidth = scrollBar.offsetWidth;
+                const usableWidth = trackWidth - barWidth;
+
+                // Calculate where the left of the bar should be
+                // We want the mouse to stay relative to the bar.
+                // But the previous implementation centered it.
+                // Let's stick to the centering if that's what the user had, OR fix it.
+                // "Refactoring" implies keeping behavior unless broken.
+                // The previous behavior:
+                // let moveX = e.clientX - rect.left - (barWidth / 2);
+                // Yes, it centers the bar on the mouse cursor.
+
+                // I will use a more standard approach: 
+                // Calculate the new scroll percentage based on mouse position in track.
+
+                let relativeX = moveEvent.clientX - trackRect.left;
+
+                // If we want to grab it exactly where we clicked:
+                // We need to know the offset.
+                // Let's just use the logic from before but cleaned up?
+                // Actually, let's use a robust standard scrollbar drag.
+
+                // Calculate percentage along the track
+                // mapped to scroll width.
+
+                // Position of mouse relative to track start
+                // We want to calculate the new slider.scrollLeft.
+
+                // If we assume the bar represents the viewport:
+                // barPos / (trackWidth - barWidth) = scrollLeft / (scrollWidth - clientWidth)
+
+                // We can't easily implement "perfect" dragging without state.
+                // Let's just make it simple and functional.
+
+                // logic:
+                // 1. Get mouse position relative to track.
+                // 2. Subtract half bar width to center it (or improved offset).
+                // 3. Clamp
+                // 4. Convert to scroll percentage
+
+                let proposedBarLeft = relativeX - (barWidth / 2); // Center bar on mouse
+
+                // Clamp
+                if (proposedBarLeft < 0) proposedBarLeft = 0;
+                if (proposedBarLeft > usableWidth) proposedBarLeft = usableWidth;
+
+                const pct = proposedBarLeft / usableWidth;
+                const maxScroll = track.scrollWidth - slider.clientWidth;
+
+                slider.scrollLeft = pct * maxScroll;
+            };
+
+            const onMouseUp = () => {
+                isDragging = false;
+                scrollBar.style.cursor = 'pointer';
+                document.removeEventListener('mousemove', onMouseMove);
+                document.removeEventListener('mouseup', onMouseUp);
+            };
+
+            document.addEventListener('mousemove', onMouseMove);
+            document.addEventListener('mouseup', onMouseUp);
+        });
+
+        slider.addEventListener('scroll', updateBar);
+        setTimeout(updateBar, 100);
+        window.addEventListener('resize', updateBar);
+    }
+
     function initSlider() {
         const slider = document.querySelector('.slider');
         const track = document.getElementById('track');
-        const bar = document.getElementById('testimonial-scroll');
-        if (!slider || !track || !bar) return;
-        const updateProgress = () => {
-            const total = track.scrollWidth - slider.clientWidth;
-            if (total <= 0) { bar.parentElement.style.display = 'none'; return; }
-            bar.parentElement.style.display = 'block';
-            const pct = (slider.scrollLeft / total) * 100;
-            bar.style.width = '30%';
-            bar.style.left = `${pct * 0.7}%`;
-        };
-        slider.addEventListener('scroll', updateProgress);
-        setTimeout(updateProgress, 100);
+        const scrollBar = document.getElementById('testimonial-scroll');
+        const scrollTrack = scrollBar ? scrollBar.parentElement : null;
+
+        setupCustomScroll(slider, track, scrollBar, scrollTrack);
     }
 
     function initClients() {
         const slider = document.querySelector('.clients-slider');
         const track = document.getElementById('clients-track');
-        const bar = document.getElementById('clients-scroll');
-        if (!slider || !track || !bar) return;
-        const updateBar = () => {
-            const total = track.scrollWidth - slider.clientWidth;
-            if (total <= 0) { bar.parentElement.style.display = 'none'; return; }
-            bar.parentElement.style.display = 'block';
-            const pct = (slider.scrollLeft / total) * 100;
-            bar.style.width = '30%';
-            bar.style.left = `${pct * 0.7}%`;
-        };
-        slider.addEventListener('scroll', updateBar);
-        setTimeout(updateBar, 100);
+        const scrollBar = document.getElementById('clients-scroll');
+        const scrollTrack = document.querySelector('.clients-wrap .scroll-track');
+
+        setupCustomScroll(slider, track, scrollBar, scrollTrack);
     }
 
     initAbout();
