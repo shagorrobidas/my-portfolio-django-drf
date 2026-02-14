@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+
+{% block title %}Resume | Dark Portfolio UI{% endblock %}
+
+{% block content %}
+<section>
+    <div class="h1">Resume</div>
+    <div class="underline"></div>
+
+    <div class="timeline-container">
+        <div class="timeline-header">
+            <div class="timeline-icon"><i class="fa-solid fa-book-open"></i></div>
+            <div class="section-title cancel-margin">Education</div>
+        </div>
+        <div class="timeline" id="education-timeline"></div>
+    </div>
+
+    <div class="timeline-container">
+        <div class="timeline-header">
+            <div class="timeline-icon"><i class="fa-solid fa-book-open"></i></div>
+            <div class="section-title cancel-margin">Experience</div>
+        </div>
+        <div class="timeline" id="experience-timeline"></div>
+    </div>
+
+    <div class="section-title">My Skills</div>
+    <div class="card soft skills" id="skills-container">
+            <!-- Skills will be loaded here -->
+    </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    async function initResume() {
+        const education = await fetchAPI('education');
+        if (education) {
+            document.getElementById('education-timeline').innerHTML = education.map(e => `
+        <div class="titem">
+          <p class="trole">${e.institution} - ${e.degree}</p>
+          <div class="tmeta" style="color: var(--accent);">${formatYear(e.start_date)} — ${e.end_date ? formatYear(e.end_date) : 'Present'}</div>
+          <p class="tinfo">${e.description}</p>
+        </div>
+      `).join('');
+        }
+
+        const experience = await fetchAPI('experience');
+        if (experience) {
+            document.getElementById('experience-timeline').innerHTML = experience.map(e => `
+        <div class="titem">
+          <p class="trole">${e.company || ''} - ${e.role}</p>
+          <div class="tmeta" style="color: var(--accent);">${formatMonthYear(e.start_date)} — ${e.end_date ? formatMonthYear(e.end_date) : 'Present'}</div>
+          <p class="tinfo">${e.description}</p>
+        </div>
+      `).join('');
+        }
+
+        const skills = await fetchAPI('skills');
+        if (skills) {
+            const container = document.getElementById('skills-container');
+            container.innerHTML = skills.map(s => `
+        <div class="skill" data-skill="${s.proficiency}">
+          <div class="row"><div class="label">${s.name}</div><div class="pct">${s.proficiency}%</div></div>
+          <div class="bar"><div class="fill"></div></div>
+        </div>
+      `).join('');
+            setTimeout(() => {
+                document.querySelectorAll('.skill').forEach(s => {
+                    const pct = s.dataset.skill;
+                    s.querySelector('.fill').style.width = pct + '%';
+                });
+            }, 100);
+        }
+    }
+    initResume();
+</script>
+{% endblock %}
