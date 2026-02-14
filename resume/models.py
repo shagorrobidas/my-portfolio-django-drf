@@ -4,10 +4,10 @@ from django.db import models
 class Experience(models.Model):
     role = models.CharField(max_length=100)
     company = models.CharField(max_length=100, blank=True)
-    start_date = models.CharField(
+    start_date = models.DateField(
         max_length=100
     )
-    end_date = models.CharField(
+    end_date = models.DateField(
         max_length=100,
         blank=True,
         null=True
@@ -25,10 +25,10 @@ class Experience(models.Model):
 class Education(models.Model):
     degree = models.CharField(max_length=100)
     institution = models.CharField(max_length=100, blank=True)
-    start_date = models.CharField(
+    start_date = models.DateField(
         max_length=100
     )
-    end_date = models.CharField(
+    end_date = models.DateField(
         max_length=100,
         blank=True,
         null=True
