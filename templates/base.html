@@ -1,0 +1,217 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title id="main-title">{% block title %}Dark Portfolio UI{% endblock %}</title>
+
+    <!-- SEO & Social Sharing Meta Tags -->
+    <meta name="description" id="meta-desc" content="Portfolio of a skilled developer." />
+    <meta property="og:title" id="og-title" content="Dark Portfolio UI" />
+    <meta property="og:description" id="og-desc" content="Developer Portfolio" />
+    <meta property="og:image" id="og-image" content="" />
+    <meta property="og:type" content="website" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" id="twitter-title" content="Dark Portfolio UI" />
+    <meta name="twitter:description" id="twitter-desc" content="Developer Portfolio" />
+    <meta name="twitter:image" id="twitter-image" content="" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+    <link rel="stylesheet" href="{% static 'css/style.css' %}" />
+</head>
+
+<body>
+
+    <div class="wrap">
+        <!-- SIDEBAR -->
+        <aside class="sidebar">
+            <div class="side-inner">
+                <div class="profile">
+                    <div class="avatar">
+                        <img id="profile-avatar" src="" alt="Profile" />
+                    </div>
+                    <div id="profile-name" class="name">Your Name</div>
+                    <div id="profile-badge" class="badge">
+                        <span
+                            style="width:7px;height:7px;border-radius:99px;background:rgba(242,193,79,.9);display:inline-block"></span>
+                        <span id="profile-title"></span>
+                    </div>
+                </div>
+
+                <div class="divider"></div>
+
+                <div class="info">
+                    <div class="info-row">
+                        <a href="#" id="profile-email-link" class="iconbox-link">
+                            <div class="iconbox" title="Email">
+                                <i class="fa-regular fa-envelope"></i>
+                            </div>
+                        </a>
+                        <div>
+                            <div class="k">Email</div>
+                            <a href="#" id="profile-email-text-link" class="text-link">
+                                <div id="profile-email" class="v"></div>
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="info-row">
+                        <a href="#" id="profile-linkedin-link" class="iconbox-link">
+                            <div class="iconbox" title="LinkedIn">
+                                <i class="fa-brands fa-linkedin-in"></i>
+                            </div>
+                        </a>
+                        <div>
+                            <div class="k">LinkedIn</div>
+                            <a href="#" id="profile-linkedin-text-link" class="text-link">
+                                <div id="profile-linkedin" class="v"></div>
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="info-row">
+                        <a href="#" id="profile-github-link" class="iconbox-link">
+                            <div class="iconbox" title="GitHub">
+                                <i class="fa-brands fa-github"></i>
+                            </div>
+                        </a>
+                        <div>
+                            <div class="k">GitHub</div>
+                            <a href="#" id="profile-github-text-link" class="text-link">
+                                <div id="profile-github" class="v"></div>
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="info-row">
+                        <div class="iconbox" title="Birthday">
+                            <i class="fa-regular fa-calendar"></i>
+                        </div>
+                        <div>
+                            <div class="k">Birthday</div>
+                            <div id="profile-birthday" class="v"></div>
+                        </div>
+                    </div>
+
+                    <div class="info-row">
+                        <div class="iconbox" title="Location">
+                            <i class="fa-solid fa-location-dot"></i>
+                        </div>
+                        <div>
+                            <div class="k">Location</div>
+                            <div id="profile-location" class="v"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="divider"></div>
+
+                <div class="social">
+                    <!-- Will be loaded dynamically -->
+                </div>
+            </div>
+        </aside>
+
+        <!-- MAIN -->
+        <main class="main">
+            <div class="topbar">
+                <div class="nav" id="nav">
+                    <a href="{% url 'home' %}"
+                        class="{% if request.resolver_match.url_name == 'home' %}active{% endif %}">About</a>
+                    <a href="{% url 'resume' %}"
+                        class="{% if request.resolver_match.url_name == 'resume' %}active{% endif %}">Resume</a>
+                    <a href="{% url 'portfolio' %}"
+                        class="{% if request.resolver_match.url_name == 'portfolio' %}active{% endif %}">Portfolio</a>
+                    <a href="{% url 'blog' %}"
+                        class="{% if request.resolver_match.url_name == 'blog' %}active{% endif %}">Blog</a>
+                    <a href="{% url 'contact' %}"
+                        class="{% if request.resolver_match.url_name == 'contact' %}active{% endif %}">Contact</a>
+                </div>
+            </div>
+
+            <div class="content">
+                {% block content %}{% endblock %}
+            </div>
+        </main>
+    </div>
+
+    <script>
+        const API_BASE = 'http://127.0.0.1:8000/api/v1';
+
+        async function fetchAPI(endpoint) {
+            try {
+                const response = await fetch(`${API_BASE}/${endpoint}/`);
+                return await response.json();
+            } catch (err) {
+                console.error(`Failed to fetch ${endpoint}:`, err);
+                return null;
+            }
+        }
+
+        function formatDate(dateString) {
+            if (!dateString) return 'Present';
+            return new Date(dateString).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+        }
+
+        function formatYear(dateString) {
+            if (!dateString) return 'Present';
+            return new Date(dateString).getFullYear();
+        }
+
+        function formatMonthYear(dateString) {
+            if (!dateString) return 'Present';
+            return new Date(dateString).toLocaleDateString('en-US', { year: 'numeric', month: 'short' });
+        }
+
+        function formatBlogDate(dateString) {
+            if (!dateString) return '';
+            return new Date(dateString).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+        }
+
+        async function initGlobal() {
+            const profile = await fetchAPI('profile');
+            if (profile) {
+                document.getElementById('profile-name').textContent = profile.name;
+                document.getElementById('profile-title').textContent = profile.title;
+                const emailLink = `mailto:${profile.email}`;
+                document.getElementById('profile-email').textContent = profile.email;
+                document.getElementById('profile-email-link').href = emailLink;
+                document.getElementById('profile-email-text-link').href = emailLink;
+
+                let linkedinRef = profile.linkedin_url || profile.linkedin;
+                if (linkedinRef && !linkedinRef.startsWith('http')) linkedinRef = `https://${linkedinRef}`;
+                document.getElementById('profile-linkedin').textContent = profile.linkedin;
+                document.getElementById('profile-linkedin-link').href = linkedinRef;
+                document.getElementById('profile-linkedin-text-link').href = linkedinRef;
+
+                let githubRef = profile.github_url || profile.github;
+                if (githubRef && !githubRef.startsWith('http')) githubRef = `https://${githubRef}`;
+                document.getElementById('profile-github').textContent = profile.github;
+                document.getElementById('profile-github-link').href = githubRef;
+                document.getElementById('profile-github-text-link').href = githubRef;
+
+                document.getElementById('profile-location').textContent = profile.location;
+                document.getElementById('profile-birthday').textContent = formatDate(profile.birthday);
+                if (profile.avatar) document.getElementById('profile-avatar').src = profile.avatar;
+            }
+
+            const socialLinks = await fetchAPI('social-links');
+            if (socialLinks) {
+                const socialContainer = document.querySelector('.social');
+                if (socialContainer) {
+                    socialContainer.innerHTML = socialLinks.map(s => `
+            <a class="soc" href="${s.url}" title="${s.name}" target="_blank">
+              <i class="${s.icon}"></i>
+            </a>
+          `).join('');
+                }
+            }
+        }
+
+        initGlobal();
+    </script>
+    {% block scripts %}{% endblock %}
+</body>
+
+</html>
