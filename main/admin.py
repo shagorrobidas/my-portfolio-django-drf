@@ -36,7 +36,7 @@ class ServiceAdmin(admin.ModelAdmin):
 
 @admin.register(Testimonial)
 class TestimonialAdmin(admin.ModelAdmin):
-    list_display = ('client_name', 'client_initials', 'text')
+    list_display = ('client_name', 'text')
     list_filter = ('client_name',)
     search_fields = ('client_name', 'client_initials', 'text')
     ordering = ('client_name',)
