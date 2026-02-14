@@ -30,7 +30,7 @@ class Service(models.Model):
 
 class Testimonial(models.Model):
     client_name = models.CharField(max_length=100)
-    client_initials = models.CharField(max_length=5)
+    image = models.ImageField(upload_to='testimonials/', blank=True, null=True)
     text = models.TextField()
 
     def __str__(self):
