@@ -5,18 +5,28 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <title id="main-title">{% block title %}Dark Portfolio UI{% endblock %}</title>
+    <title id="main-title">{% block title %}{% endblock %} | {{ profile_global.name|default:"Portfolio" }}</title>
 
     <!-- SEO & Social Sharing Meta Tags -->
     <meta name="description" id="meta-desc" content="Portfolio of a skilled developer." />
     <meta property="og:title" id="og-title" content="Dark Portfolio UI" />
     <meta property="og:description" id="og-desc" content="Developer Portfolio" />
+    {% if profile_global and profile_global.avatar %}
+    <meta property="og:image" id="og-image"
+        content="{{ request.scheme }}://{{ request.get_host }}{{ profile_global.avatar.url }}" />
+    {% else %}
     <meta property="og:image" id="og-image" content="" />
+    {% endif %}
     <meta property="og:type" content="website" />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" id="twitter-title" content="Dark Portfolio UI" />
     <meta name="twitter:description" id="twitter-desc" content="Developer Portfolio" />
+    {% if profile_global and profile_global.avatar %}
+    <meta name="twitter:image" id="twitter-image"
+        content="{{ request.scheme }}://{{ request.get_host }}{{ profile_global.avatar.url }}" />
+    {% else %}
     <meta name="twitter:image" id="twitter-image" content="" />
+    {% endif %}
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
     <link rel="stylesheet" href="{% static 'css/style.css' %}" />
 </head>
