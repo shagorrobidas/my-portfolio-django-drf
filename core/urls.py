@@ -18,12 +18,16 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
-from django.views.generic import TemplateView
+from main import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/v1/', include('api.urls')),
-    path('', TemplateView.as_view(template_name='index.html')),
+    path('', views.home, name='home'),
+    path('portfolio/', views.portfolio, name='portfolio'),
+    path('resume/', views.resume, name='resume'),
+    path('blog/', views.blog, name='blog'),
+    path('contact/', views.contact, name='contact'),
 ]
 if settings.DEBUG:
     urlpatterns += static(
