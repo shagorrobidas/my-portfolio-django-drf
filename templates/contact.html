@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+
+{% block title %}Contact | Dark Portfolio UI{% endblock %}
+
+{% block content %}
+<section>
+    <div class="h1">Contact</div>
+    <div class="underline"></div>
+
+    <div class="contact-card">
+        <form class="form" id="contactForm">
+            <div class="field">
+                <label>FULL NAME</label>
+                <input name="full_name" required placeholder="Your name" />
+            </div>
+            <div class="field">
+                <label>EMAIL</label>
+                <input name="email" type="email" required placeholder="you@email.com" />
+            </div>
+            <div class="field" style="grid-column: 1 / -1;">
+                <label>SUBJECT</label>
+                <input name="subject" required placeholder="Subject" />
+            </div>
+            <div class="field" style="grid-column: 1 / -1;">
+                <label>MESSAGE</label>
+                <textarea name="message" required placeholder="Write your message..."></textarea>
+            </div>
+
+            <div class="submit">
+                <button class="btn" type="submit">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M22 2L11 13" />
+                        <path d="M22 2l-7 20-4-9-9-4z" />
+                    </svg>
+                    Send Message
+                </button>
+            </div>
+        </form>
+    </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.getElementById('contactForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const data = Object.fromEntries(new FormData(e.target).entries());
+        try {
+            const resp = await fetch(`${API_BASE}/contact/`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            });
+            if (resp.ok) { alert('Message sent!'); e.target.reset(); }
+            else alert('Failed to send.');
+        } catch (err) { alert('Error occurred.'); }
+    });
+</script>
+{% endblock %}
