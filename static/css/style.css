@@ -1,7 +1,8 @@
 :root {
     --bg: #0b0d10;
-    --panel: #15181d;
+    --panel: #282829;
     --panel2: #12151a;
+    --panel3: #373738;
     --card: #171b20;
     --card2: #14181d;
     --stroke: rgba(255, 255, 255, .08);
@@ -52,7 +53,7 @@ button {
     margin: 28px auto;
     padding: 0 18px;
     display: grid;
-    grid-template-columns: 330px 1fr;
+    grid-template-columns: 370px 1fr;
     gap: 22px;
     align-items: start;
 }
@@ -67,7 +68,7 @@ button {
 .sidebar {
     position: sticky;
     top: 18px;
-    background: linear-gradient(180deg, rgba(255, 255, 255, .06), rgba(255, 255, 255, .03));
+    background: #1E1E1F;
     border: 1px solid var(--stroke);
     border-radius: 26px;
     box-shadow: var(--shadow);
@@ -142,9 +143,9 @@ button {
     gap: 14px;
     align-items: center;
     padding: 12px 14px;
-    border-radius: 14px;
-    background: rgba(0, 0, 0, .18);
-    border: 1px solid rgba(255, 255, 255, .06);
+    /* border-radius: 14px; */
+    /* background: rgba(0, 0, 0, .18); */
+    /* border: 1px solid rgba(255, 255, 255, .06); */
 }
 
 .iconbox {
@@ -153,11 +154,15 @@ button {
     border-radius: 10px;
     display: grid;
     place-items: center;
-    background: rgba(0, 0, 0, .2);
-    border: 1px solid rgba(255, 255, 255, .08);
+    background: #202022;
+    /* border: 1px solid rgba(255, 255, 255, .08); */
     color: var(--accent);
     font-size: 18px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, .25);
+    transition: all 0.3s ease;
+    box-shadow:
+        0 10px 25px rgba(0, 0, 0, 0.6),
+        inset 0 1px 1px rgba(255, 255, 255, 0.05),
+        inset 0 -1px 1px rgba(0, 0, 0, 0.6);
 }
 
 .iconbox svg {
@@ -221,7 +226,8 @@ button {
 
 /* Main */
 .main {
-    background: linear-gradient(180deg, rgba(255, 255, 255, .06), rgba(255, 255, 255, .03));
+    /* background: linear-gradient(180deg, rgba(255, 255, 255, .06), rgba(255, 255, 255, .03)); */
+    background: #202022;
     border: 1px solid var(--stroke);
     border-radius: 26px;
     box-shadow: var(--shadow);
@@ -315,27 +321,31 @@ button {
 }
 
 .card {
-    background: var(--card);
-    border: 1px solid var(--stroke);
-    border-radius: var(--radius);
+    background: #202022;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 20px;
     padding: 30px;
     display: grid;
     grid-template-columns: 48px 1fr;
     gap: 20px;
     align-items: start;
-    box-shadow: var(--shadow);
+    box-shadow:
+        0 25px 50px -12px rgba(0, 0, 0, 0.6),
+        inset 0 1px 1px rgba(255, 255, 255, 0.05),
+        inset 0 -1px 1px rgba(0, 0, 0, 0.6);
 }
 
 .mini-ico {
     width: 48px;
     height: 48px;
-    border-radius: 14px;
+    border-radius: 12px;
     display: grid;
     place-items: center;
-    background: rgba(242, 193, 79, .10);
-    border: 1px solid rgba(242, 193, 79, .22);
+    background: transparent;
+    border: 1px solid rgba(242, 193, 79, .5);
     color: var(--accent);
     flex-shrink: 0;
+    box-shadow: none;
 }
 
 .mini-ico i {
@@ -398,21 +408,25 @@ button {
 }
 
 .tcard-inner {
-    background: var(--card);
-    border: 1px solid var(--stroke);
-    border-radius: var(--radius);
+    background: #202022;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 20px;
     padding: 30px;
     position: relative;
     height: 100%;
+    box-shadow:
+        0 25px 50px -12px rgba(0, 0, 0, 0.6),
+        inset 0 1px 1px rgba(255, 255, 255, 0.05),
+        inset 0 -1px 1px rgba(0, 0, 0, 0.6);
 }
 
 .tava {
     position: absolute;
     top: -30px;
-    left: 30px;
-    width: 60px;
-    height: 60px;
-    background: var(--panel2);
+    left: 40px;
+    width: 80px;
+    height: 80px;
+    background: var(--panel3);
     border-radius: 18px;
     border: 1px solid var(--stroke);
     display: grid;
@@ -432,6 +446,7 @@ button {
     font-weight: 700;
     color: #fff;
     margin: 10px 0 15px;
+    text-align: center;
 }
 
 .ttext {
@@ -529,13 +544,16 @@ button {
     width: 48px;
     height: 48px;
     border-radius: 12px;
-    background: rgba(255, 255, 255, .05);
-    border: 1px solid rgba(255, 255, 255, .08);
     display: grid;
     place-items: center;
     color: var(--accent);
     font-size: 20px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, .2);
+    background: #202022;
+    transition: all 0.3s ease;
+    box-shadow:
+        0 10px 25px rgba(0, 0, 0, 0.6),
+        inset 0 1px 1px rgba(255, 255, 255, 0.05),
+        inset 0 -1px 1px rgba(0, 0, 0, 0.6);
 }
 
 .section-title.cancel-margin {
@@ -594,13 +612,12 @@ button {
     margin: 0;
 }
 
-/* Skills */
 .skills {
-    margin-top: 10px;
+    display: block;
 }
 
 .skill {
-    margin: 14px 0;
+    margin: 30px 0;
 }
 
 .skill .row {
@@ -960,4 +977,228 @@ button {
 .btn svg {
     width: 18px;
     height: 18px;
+}
+
+/* Modal */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(5px);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.modal-overlay.active {
+    display: flex;
+    opacity: 1;
+}
+
+.modal-content {
+    background: var(--card);
+    border: 1px solid var(--stroke);
+    border-radius: var(--radius);
+    padding: 30px;
+    width: 90%;
+    max-width: 400px;
+    text-align: center;
+    transform: scale(0.9);
+    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+}
+
+.modal-overlay.active .modal-content {
+    transform: scale(1);
+}
+
+.modal-icon {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: rgba(242, 193, 79, 0.1);
+    color: var(--accent);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 24px;
+    margin: 0 auto 20px;
+    border: 1px solid var(--accent);
+}
+
+.modal-title {
+    font-size: 20px;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 10px;
+}
+
+.modal-text {
+    color: var(--muted);
+    font-size: 15px;
+    margin-bottom: 25px;
+    line-height: 1.5;
+}
+
+.modal-btn {
+    background: var(--accent);
+    color: var(--bg);
+    border: none;
+    padding: 12px 30px;
+    border-radius: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.2s ease, filter 0.2s ease;
+}
+
+.modal-btn:hover {
+    transform: translateY(-2px);
+    filter: brightness(1.1);
+}
+
+/* Modal Error State */
+.modal-icon.error {
+    background: rgba(255, 107, 107, 0.1);
+    color: #ff6b6b;
+    border-color: #ff6b6b;
+}
+
+.modal-btn.error {
+    background: #ff6b6b;
+    color: #fff;
+}
+
+/* Testimonial Modal specific styles */
+/* Testimonial Modal specific styles */
+.testimonial-modal-content {
+    max-width: 700px;
+    width: 95%;
+    padding: 40px;
+    text-align: left;
+    position: relative;
+}
+
+.modal-close-icon {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: transparent;
+    border: none;
+    color: var(--muted);
+    font-size: 20px;
+    cursor: pointer;
+    transition: color 0.3s;
+    padding: 5px;
+    z-index: 10;
+}
+
+.modal-close-icon:hover {
+    color: var(--accent);
+}
+
+.modal-grid {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 30px;
+    align-items: start;
+}
+
+@media (max-width: 650px) {
+    .modal-grid {
+        grid-template-columns: 1fr;
+        text-align: center;
+    }
+
+    .modal-header-info {
+        justify-content: center;
+        flex-direction: column;
+        gap: 10px !important;
+    }
+
+    .modal-quote-icon {
+        margin-bottom: 5px;
+    }
+
+    .modal-tava {
+        margin: 0 auto;
+    }
+}
+
+.modal-tava {
+    width: 80px;
+    height: 80px;
+    background: var(--panel2);
+    border-radius: 20px;
+    border: 1px solid var(--stroke);
+    overflow: hidden;
+    flex-shrink: 0;
+    display: grid;
+    place-items: center;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+}
+
+.modal-tava img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.modal-right {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.modal-header-info {
+    display: flex;
+    align-items: flex-start;
+    gap: 15px;
+    /* margin-bottom: 10px; */
+}
+
+.modal-quote-icon {
+    font-size: 28px;
+    color: var(--accent);
+    opacity: 1;
+    line-height: 1;
+    margin-top: -5px;
+}
+
+.modal-tname {
+    font-size: 26px;
+    font-weight: 700;
+    color: #fff;
+    margin: 0 0 5px;
+    line-height: 1.2;
+}
+
+.modal-trole {
+    font-size: 15px;
+    color: var(--muted);
+    font-weight: 500;
+}
+
+.modal-desc {
+    background: transparent;
+    padding: 0;
+    border: none;
+    text-align: left;
+    font-size: 16px;
+    line-height: 1.7;
+    color: var(--muted);
+}
+
+.tcard {
+    cursor: pointer;
+    transition: transform 0.2s ease;
+}
+
+.tcard:hover {
+    transform: translateY(-5px);
 }
