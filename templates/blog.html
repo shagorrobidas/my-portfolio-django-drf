@@ -1,25 +1,28 @@
 {% extends "base.html" %}
 
-{% block title %}Blog | Dark Portfolio UI{% endblock %}
+{% block title %}Blog{% endblock %}
 
 {% block content %}
 <section>
-    <div class="h1">Blog</div>
-    <div class="underline"></div>
-    <div class="posts" id="blog-posts"></div>
+  <div class="h1">Blog</div>
+  <div class="underline"></div>
+  <div class="posts" id="blog-posts"></div>
 </section>
 {% endblock %}
 
 {% block scripts %}
 <script>
-    async function initBlog() {
-        const posts = await fetchAPI('posts');
-        if (posts) {
-            document.getElementById('blog-posts').innerHTML = posts.map(p => `
+  async function initBlog() {
+    const posts = await fetchAPI('posts');
+    if (posts) {
+      document.getElementById('blog-posts').innerHTML = posts.map(p => `
         <a href="${p.url || '#'}" class="post-link" target="_blank">
           <article class="post">
             <div class="img">
-              ${p.image ? `<img src="${p.image}">` : `<span>${p.category}</span>`}
+              ${p.image
+          ? `<img src="${p.image}" alt="${p.title}" onerror="this.src=''; this.parentElement.innerHTML='<span>${p.category}</span>';">`
+          : `<span>${p.category}</span>`
+        }
             </div>
             <div class="body">
               <div class="date">Post • ${formatBlogDate(p.date)}</div>
@@ -29,8 +32,9 @@
           </article>
         </a>
       `).join('');
-        }
     }
-    initBlog();
+    console.log(posts);
+  }
+  initBlog();
 </script>
 {% endblock %}
