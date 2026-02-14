@@ -1,0 +1,130 @@
+{% extends "base.html" %}
+
+{% block title %}About | Dark Portfolio UI{% endblock %}
+
+{% block content %}
+<!-- ABOUT -->
+<section>
+    <div class="h1">About Me</div>
+    <div class="underline"></div>
+    <div id="about-content">
+        <p class="p"></p>
+    </div>
+
+    <div class="section-title">What I'm Doing</div>
+    <div class="grid-2" id="services-grid">
+        <!-- Services will be loaded here -->
+    </div>
+
+    <div class="section-title">Testimonials</div>
+    <div class="slider-wrap">
+        <div class="slider">
+            <div class="track" id="track">
+                <!-- Testimonials will be loaded here -->
+            </div>
+        </div>
+        <div class="scroll-track">
+            <div class="scroll-bar" id="testimonial-scroll"></div>
+        </div>
+    </div>
+
+    <div class="section-title">Clients</div>
+    <div class="clients-wrap">
+        <div class="clients-slider">
+            <div class="clients-track" id="clients-track">
+                <!-- Clients will be loaded here -->
+            </div>
+        </div>
+        <div class="scroll-track">
+            <div class="scroll-bar" id="clients-scroll"></div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    async function initAbout() {
+        const profile = await fetchAPI('profile');
+        if (profile) {
+            document.getElementById('about-content').innerHTML = `
+        <p class="p">${profile.about_text}</p>
+        <p class="p">${profile.about_text_extra}</p>
+      `;
+        }
+
+        const services = await fetchAPI('services');
+        if (services) {
+            document.getElementById('services-grid').innerHTML = services.map(s => `
+        <div class="card">
+          <div class="mini-ico"><i class="${s.icon_class}"></i></div>
+          <div class="card-content">
+            <div class="card-title">${s.title}</div>
+            <p class="card-desc">${s.description}</p>
+          </div>
+        </div>
+      `).join('');
+        }
+
+        const testimonials = await fetchAPI('testimonials');
+        if (testimonials) {
+            document.getElementById('track').innerHTML = testimonials.map(t => `
+        <div class="tcard">
+          <div class="tcard-inner">
+            <div class="tava">
+              ${t.client_initials ? `<span>${t.client_initials}</span>` : `<img src="${t.client_image}" alt="${t.client_name}">`}
+            </div>
+            <div class="tname">${t.client_name}</div>
+            <p class="ttext">${t.text}</p>
+          </div>
+        </div>
+      `).join('');
+            initSlider();
+        }
+
+        const clients = await fetchAPI('clients');
+        if (clients) {
+            document.getElementById('clients-track').innerHTML = clients.map(c => `
+        <div class="client-item"><img src="${c.logo}" alt="${c.name}"></div>
+      `).join('');
+            initClients();
+        }
+    }
+
+    function initSlider() {
+        const slider = document.querySelector('.slider');
+        const track = document.getElementById('track');
+        const bar = document.getElementById('testimonial-scroll');
+        if (!slider || !track || !bar) return;
+        const updateProgress = () => {
+            const total = track.scrollWidth - slider.clientWidth;
+            if (total <= 0) { bar.parentElement.style.display = 'none'; return; }
+            bar.parentElement.style.display = 'block';
+            const pct = (slider.scrollLeft / total) * 100;
+            bar.style.width = '30%';
+            bar.style.left = `${pct * 0.7}%`;
+        };
+        slider.addEventListener('scroll', updateProgress);
+        setTimeout(updateProgress, 100);
+    }
+
+    function initClients() {
+        const slider = document.querySelector('.clients-slider');
+        const track = document.getElementById('clients-track');
+        const bar = document.getElementById('clients-scroll');
+        if (!slider || !track || !bar) return;
+        const updateBar = () => {
+            const total = track.scrollWidth - slider.clientWidth;
+            if (total <= 0) { bar.parentElement.style.display = 'none'; return; }
+            bar.parentElement.style.display = 'block';
+            const pct = (slider.scrollLeft / total) * 100;
+            bar.style.width = '30%';
+            bar.style.left = `${pct * 0.7}%`;
+        };
+        slider.addEventListener('scroll', updateBar);
+        setTimeout(updateBar, 100);
+    }
+
+    initAbout();
+</script>
+{% endblock %}
