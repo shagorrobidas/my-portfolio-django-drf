@@ -1374,3 +1374,33 @@ button {
         transform: scale(1);
     }
 }
+/* --- RESPONSIVE PRELOADER --- */
+@media (max-width: 1024px) {
+    .nexus-text {
+        font-size: 22px;
+        letter-spacing: 6px;
+    }
+    .nexus {
+        width: 70px;
+        height: 70px;
+    }
+}
+
+@media (max-width: 768px) {
+    .nexus-text {
+        font-size: 16px;
+        letter-spacing: 4px;
+        padding: 0 20px;
+    }
+    .nexus {
+        width: 50px;
+        height: 50px;
+    }
+    .nexus-core {
+        width: 15px;
+        height: 15px;
+    }
+    .nexus-wrapper {
+        gap: 30px;
+    }
+}
