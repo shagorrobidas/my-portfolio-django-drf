@@ -31,7 +31,7 @@
 
       document.getElementById('blog-posts').innerHTML = postsArray.map(p => {
         const catList = p.categories_list || [];
-        const catsData = catList.map(c => c.toLowerCase()).join(' ');
+        const catsData = catList.map(c => c.toLowerCase()).join(',');
         const displayCats = catList.length > 0 ? catList.join(', ') : 'Uncategorized';
 
         return `
@@ -60,10 +60,10 @@
         document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
         chip.classList.add('active');
 
-        const f = chip.dataset.filter;
+        const f = chip.dataset.filter.toLowerCase();
         document.querySelectorAll('.post-link').forEach(p => {
-          const pCats = p.dataset.cats || "";
-          p.style.display = (f === 'all' || pCats.split(' ').includes(f)) ? '' : 'none';
+          const pCats = (p.dataset.cats || "").split(',');
+          p.style.display = (f === 'all' || pCats.includes(f)) ? '' : 'none';
         });
       });
       console.log('Blog Posts Loaded:', postsArray);
