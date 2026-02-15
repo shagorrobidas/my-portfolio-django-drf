@@ -1202,3 +1202,36 @@ button {
 .tcard:hover {
     transform: translateY(-5px);
 }
+
+/* Filters & Chips */
+.filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin: 30px 0;
+}
+
+.chip {
+    background: var(--panel);
+    color: var(--muted);
+    border: 1px solid var(--stroke);
+    padding: 8px 18px;
+    border-radius: 12px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.chip:hover {
+    background: var(--panel3);
+    color: #fff;
+    border-color: rgba(255, 255, 255, 0.2);
+}
+
+.chip.active {
+    background: var(--accent);
+    color: var(--bg);
+    border-color: var(--accent);
+    box-shadow: 0 4px 15px rgba(242, 193, 79, 0.25);
+}

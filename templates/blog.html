@@ -6,6 +6,11 @@
 <section>
   <div class="h1">Blog</div>
   <div class="underline"></div>
+
+  <div class="filters" id="filters">
+    <button class="chip active" data-filter="all">All</button>
+  </div>
+
   <div class="posts" id="blog-posts"></div>
 </section>
 {% endblock %}
@@ -13,27 +18,56 @@
 {% block scripts %}
 <script>
   async function initBlog() {
+    const categories = await fetchAPI('blog-categories');
+    if (categories) {
+      document.getElementById('filters').innerHTML = '<button class="chip active" data-filter="all">All</button>' +
+        categories.map(c => `<button class="chip" data-filter="${c.name.toLowerCase()}">${c.name}</button>`).join('');
+    }
+
     const posts = await fetchAPI('posts');
     if (posts) {
-      document.getElementById('blog-posts').innerHTML = posts.map(p => `
-        <a href="${p.url || '#'}" class="post-link" target="_blank">
-          <article class="post">
-            <div class="img">
-              ${p.image
-          ? `<img src="${p.image}" alt="${p.title}" onerror="this.src=''; this.parentElement.innerHTML='<span>${p.category}</span>';">`
-          : `<span>${p.category}</span>`
-        }
-            </div>
-            <div class="body">
-              <div class="date">Post • ${formatBlogDate(p.date)}</div>
-              <h3>${p.title}</h3>
-              <p>${p.summary}</p>
-            </div>
-          </article>
-        </a>
-      `).join('');
+      // Handle potential paginated response
+      const postsArray = Array.isArray(posts) ? posts : (posts.results || []);
+
+      document.getElementById('blog-posts').innerHTML = postsArray.map(p => {
+        const catList = p.categories_list || [];
+        const catsData = catList.map(c => c.toLowerCase()).join(' ');
+        const displayCats = catList.length > 0 ? catList.join(', ') : 'Uncategorized';
+
+        return `
+          <a href="${p.url || '#'}" class="post-link" target="_blank" data-cats="${catsData}">
+            <article class="post">
+              <div class="img">
+                ${p.image
+            ? `<img src="${p.image}" alt="${p.title}" onerror="this.src=''; this.parentElement.innerHTML='<span>${displayCats}</span>';">`
+            : `<span>${displayCats}</span>`
+          }
+              </div>
+              <div class="body">
+                <div class="date">Post • ${formatBlogDate(p.date)}</div>
+                <h3>${p.title}</h3>
+                <p>${p.summary}</p>
+              </div>
+            </article>
+          </a>
+        `;
+      }).join('');
+
+      document.getElementById('filters').addEventListener('click', (e) => {
+        const chip = e.target.closest('.chip');
+        if (!chip) return;
+
+        document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+        chip.classList.add('active');
+
+        const f = chip.dataset.filter;
+        document.querySelectorAll('.post-link').forEach(p => {
+          const pCats = p.dataset.cats || "";
+          p.style.display = (f === 'all' || pCats.split(' ').includes(f)) ? '' : 'none';
+        });
+      });
+      console.log('Blog Posts Loaded:', postsArray);
     }
-    console.log(posts);
   }
   initBlog();
 </script>
