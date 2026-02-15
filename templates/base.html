@@ -33,7 +33,21 @@
 
 <body>
 
+    <!-- Preloader: The Stellar Nexus -->
+    <div id="preloader">
+        <div class="nexus-wrapper">
+            <div class="nexus">
+                <div class="nexus-core"></div>
+                <div class="ring"></div>
+                <div class="ring"></div>
+                <div class="ring"></div>
+            </div>
+            <div class="nexus-text">INITIALIZING {{ profile_global.name|upper|default:"DEVELOPER" }}</div>
+        </div>
+    </div>
+
     <div class="wrap">
+
         <!-- SIDEBAR -->
         <aside class="sidebar">
             <div class="side-inner">
@@ -220,7 +234,15 @@
         }
 
         initGlobal();
+
+        window.addEventListener('load', () => {
+            const preloader = document.getElementById('preloader');
+            setTimeout(() => {
+                preloader.classList.add('fade-out');
+            }, 500); // Small delay for smooth feel
+        });
     </script>
+
     {% block scripts %}{% endblock %}
 </body>
 
