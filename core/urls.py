@@ -20,6 +20,10 @@ from django.conf import settings
 from django.conf.urls.static import static
 from main import views
 
+admin.site.site_header = "My Portfolio Admin"
+admin.site.site_title = "Portfolio Admin Portal"
+admin.site.index_title = "Welcome to your Portfolio Management"
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/v1/', include('api.urls')),
