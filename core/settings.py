@@ -31,6 +31,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'jazzmin',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -150,3 +151,7 @@ EMAIL_HOST_USER = 'shagorrobidasjvai@gmail.com'
 EMAIL_HOST_PASSWORD = 'gqsr mpuj jhhr riur'
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 CONTACT_EMAIL = 'shagorrobidasjvai@gmail.com'  # Target email for contact form
+
+
+# Jazzmin Settings
+from core.jazzmin import JAZZMIN_SETTINGS, JAZZMIN_UI_CONFIG
