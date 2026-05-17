@@ -1,3 +1,4 @@
+# Custom Unfold Admin for Job Applications
 import os
 from django.contrib import admin
 from django.core.mail import EmailMessage
@@ -13,42 +14,9 @@ class JobApplicationAdmin(ModelAdmin):
     list_display = ('job_title', 'company_name', 'employer_email', 'status', 'created_at')
     list_filter = ('status', 'created_at')
     search_fields = ('job_title', 'company_name', 'employer_email')
-    readonly_fields = ('generated_cv', 'generated_cover_letter', 'status')
+    readonly_fields = ('generated_cv', 'generated_cover_letter', 'status', 'cv_pdf', 'cv_word', 'cover_letter_pdf', 'cover_letter_word')
     
     actions = ['send_application_email']
-
-    def save_model(self, request, obj, form, change):
-        is_new = obj.pk is None
-        # Save first to get the image path if uploaded
-        super().save_model(request, obj, form, change)
-        
-        if obj.status == 'draft':
-            try:
-                image_path = obj.job_description_image.path if obj.job_description_image else None
-                
-                # Check if we have API KEY
-                from django.conf import settings
-                if not settings.OPENAI_API_KEY:
-                    messages.error(request, "OPENAI_API_KEY is not set in environment or settings. Generation skipped.")
-                    return
-                
-                cv, cover_letter = generate_application_documents(
-                    job_description_text=obj.job_description_text,
-                    job_image_path=image_path
-                )
-                
-                obj.generated_cv = cv
-                obj.generated_cover_letter = cover_letter
-                
-                if "Error generating documents" not in cover_letter:
-                    obj.status = 'generated'
-                    messages.success(request, "AI CV and Cover Letter generated successfully!")
-                else:
-                    messages.error(request, cover_letter)
-                    
-                obj.save(update_fields=['generated_cv', 'generated_cover_letter', 'status'])
-            except Exception as e:
-                messages.error(request, f"Generation failed: {str(e)}")
 
     @action(description="Send Application Email")
     def send_application_email(self, request, queryset):
