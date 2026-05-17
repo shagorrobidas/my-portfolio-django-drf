@@ -13,10 +13,14 @@ https://docs.djangoproject.com/en/6.0/ref/settings/
 from pathlib import Path
 
 import os
+from dotenv import load_dotenv
 from core.unfold_settings import UNFOLD
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+
+
+load_dotenv()
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/
@@ -165,5 +169,7 @@ CONTACT_EMAIL = 'shagorrobidasjvai@gmail.com'  # Target email for contact form
 
 # Jazzmin Settings
 # from core.jazzmin import JAZZMIN_SETTINGS, JAZZMIN_UI_CONFIG
+
+
 
 OPENAI_API_KEY = os.environ.get("OPENAI_API_KEY", "")
