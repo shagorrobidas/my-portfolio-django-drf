@@ -5,4 +5,5 @@ urlpatterns = [
     path('', include('resume.api.urls')),
     path('', include('project.api.urls')),
     path('', include('blog.api.urls')),
+    path('', include('job_manager.api.urls')),
 ]
