@@ -12,6 +12,8 @@ https://docs.djangoproject.com/en/6.0/ref/settings/
 
 from pathlib import Path
 
+import os
+from core.unfold_settings import UNFOLD
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -25,13 +27,14 @@ SECRET_KEY = 'django-insecure-2(7q7(ud(gf4ifq04_siqkwypws@vkp(zewj=^9%n)k)%_wf9%
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["*"]
 
 
 # Application definition
 
 INSTALLED_APPS = [
-    'jazzmin',
+    # 'jazzmin',
+    'unfold',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -45,6 +48,7 @@ INSTALLED_APPS = [
     'resume',
     'project',
     'blog',
+    'job_manager',
 ]
 
 MIDDLEWARE = [
@@ -108,6 +112,12 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+# Authentication Backends
+AUTHENTICATION_BACKENDS = [
+    'core.backends.EmailBackend',
+    'django.contrib.auth.backends.ModelBackend',
+]
+
 
 # Internationalization
 # https://docs.djangoproject.com/en/6.0/topics/i18n/
@@ -154,4 +164,6 @@ CONTACT_EMAIL = 'shagorrobidasjvai@gmail.com'  # Target email for contact form
 
 
 # Jazzmin Settings
-from core.jazzmin import JAZZMIN_SETTINGS, JAZZMIN_UI_CONFIG
+# from core.jazzmin import JAZZMIN_SETTINGS, JAZZMIN_UI_CONFIG
+
+OPENAI_API_KEY = os.environ.get("OPENAI_API_KEY", "")
