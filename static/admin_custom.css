@@ -1,0 +1,150 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap');
+
+/* Typography & Scrollbar */
+body {
+    font-family: 'Outfit', ui-sans-serif, system-ui, -apple-system, sans-serif !important;
+}
+
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(20, 184, 166, 0.4); border-radius: 10px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(20, 184, 166, 0.8); }
+
+/* Buttons & Elements */
+button, a.button, input[type="submit"] {
+    border-radius: 10px !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+.bg-primary-600, .dark\:bg-primary-600 {
+    background: linear-gradient(135deg, #14b8a6 0%, #0d9488 100%) !important;
+    box-shadow: 0 4px 15px rgba(20, 184, 166, 0.4) !important;
+    border: none !important;
+}
+.bg-primary-600:hover, .dark\:bg-primary-600:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(20, 184, 166, 0.6) !important;
+}
+
+tr { transition: all 0.2s ease; }
+
+/* -----------------------------------------
+   DARK MODE (Glassmorphism & Image)
+   ----------------------------------------- */
+html.dark body {
+    background: url('/static/admin_bg.png') no-repeat center center fixed !important;
+    background-size: cover !important;
+    color: #e2e8f0 !important;
+}
+
+html.dark body::before {
+    content: '';
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(2, 6, 23, 0.6);
+    z-index: -1;
+}
+
+html.dark #sidebar {
+    background: rgba(15, 23, 42, 0.3) !important;
+    backdrop-filter: blur(24px) !important;
+    -webkit-backdrop-filter: blur(24px) !important;
+    border-right: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
+
+html.dark header, html.dark #header {
+    background: rgba(15, 23, 42, 0.3) !important;
+    backdrop-filter: blur(20px) !important;
+    -webkit-backdrop-filter: blur(20px) !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
+
+html.dark .bg-white, html.dark .dark\:bg-gray-900, html.dark .bg-gray-50, html.dark .dark\:bg-gray-800 {
+    background: rgba(15, 23, 42, 0.4) !important;
+    backdrop-filter: blur(20px) !important;
+    -webkit-backdrop-filter: blur(20px) !important;
+    
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    border-top: 1px solid rgba(255, 255, 255, 0.25) !important; 
+    border-left: 1px solid rgba(255, 255, 255, 0.15) !important;
+    border-radius: 16px !important;
+    
+    box-shadow: 
+        0 4px 6px -1px rgba(0, 0, 0, 0.3),
+        0 12px 20px -3px rgba(0, 0, 0, 0.4),
+        0 30px 50px -15px rgba(0, 0, 0, 0.7),
+        inset 0 1px 1px rgba(255, 255, 255, 0.15) 
+        !important;
+}
+
+html.dark input:not([type="checkbox"]):not([type="radio"]), html.dark select, html.dark textarea {
+    background: rgba(15, 23, 42, 0.6) !important;
+    border: 1px solid rgba(20, 184, 166, 0.2) !important;
+    border-radius: 10px !important;
+    color: #e2e8f0 !important;
+    transition: all 0.3s ease !important;
+}
+html.dark input:not([type="checkbox"]):not([type="radio"]):focus, html.dark select:focus, html.dark textarea:focus {
+    box-shadow: 0 0 0 2px rgba(20, 184, 166, 0.5) !important;
+    border-color: rgba(20, 184, 166, 1) !important;
+    background: rgba(15, 23, 42, 0.9) !important;
+}
+html.dark tr:hover td, html.dark tr:hover th {
+    background: rgba(20, 184, 166, 0.1) !important;
+}
+
+/* -----------------------------------------
+   LIGHT MODE (Clean Soft Theme)
+   ----------------------------------------- */
+html:not(.dark) body {
+    background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%) !important;
+    background-attachment: fixed !important;
+    color: #1e293b !important;
+}
+
+html:not(.dark) #sidebar {
+    background: rgba(255, 255, 255, 0.7) !important;
+    backdrop-filter: blur(20px) !important;
+    -webkit-backdrop-filter: blur(20px) !important;
+    border-right: 1px solid rgba(0, 0, 0, 0.05) !important;
+}
+
+html:not(.dark) header, html:not(.dark) #header {
+    background: rgba(255, 255, 255, 0.7) !important;
+    backdrop-filter: blur(20px) !important;
+    -webkit-backdrop-filter: blur(20px) !important;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05) !important;
+}
+
+html:not(.dark) .bg-white, html:not(.dark) .bg-gray-50 {
+    background: rgba(255, 255, 255, 0.8) !important;
+    backdrop-filter: blur(20px) !important;
+    -webkit-backdrop-filter: blur(20px) !important;
+    
+    border: 1px solid rgba(255, 255, 255, 1) !important;
+    border-radius: 16px !important;
+    
+    box-shadow: 
+        0 4px 6px -1px rgba(0, 0, 0, 0.05),
+        0 10px 15px -3px rgba(0, 0, 0, 0.05),
+        0 20px 40px -10px rgba(0, 0, 0, 0.1)
+        !important;
+}
+
+html:not(.dark) input:not([type="checkbox"]):not([type="radio"]), html:not(.dark) select, html:not(.dark) textarea {
+    background: rgba(255, 255, 255, 0.9) !important;
+    border: 1px solid rgba(20, 184, 166, 0.3) !important;
+    border-radius: 10px !important;
+    color: #1e293b !important;
+    transition: all 0.3s ease !important;
+}
+
+html:not(.dark) input:not([type="checkbox"]):not([type="radio"]):focus, html:not(.dark) select:focus, html:not(.dark) textarea:focus {
+    box-shadow: 0 0 0 2px rgba(20, 184, 166, 0.3) !important;
+    border-color: rgba(20, 184, 166, 1) !important;
+    background: #ffffff !important;
+}
+
+html:not(.dark) tr:hover td, html:not(.dark) tr:hover th {
+    background: rgba(20, 184, 166, 0.05) !important;
+}
