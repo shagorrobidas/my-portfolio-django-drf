@@ -32,6 +32,7 @@ urlpatterns = [
     path('resume/', views.resume, name='resume'),
     path('blog/', views.blog, name='blog'),
     path('contact/', views.contact, name='contact'),
+    path('job-apply/', views.job_apply, name='job_apply'),
 ]
 if settings.DEBUG:
     urlpatterns += static(

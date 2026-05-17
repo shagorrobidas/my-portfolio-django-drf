@@ -19,3 +19,8 @@ def blog(request):
 
 def contact(request):
     return render(request, 'contact.html')
+
+
+def job_apply(request):
+    return render(request, 'job_apply.html')
+

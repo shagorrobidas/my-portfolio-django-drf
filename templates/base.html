@@ -151,6 +151,8 @@
                         class="{% if request.resolver_match.url_name == 'blog' %}active{% endif %}">Blog</a>
                     <a href="{% url 'contact' %}"
                         class="{% if request.resolver_match.url_name == 'contact' %}active{% endif %}">Contact</a>
+                    <a href="{% url 'job_apply' %}"
+                        class="{% if request.resolver_match.url_name == 'job_apply' %}active{% endif %}">Job Apply</a>
                 </div>
             </div>
 
