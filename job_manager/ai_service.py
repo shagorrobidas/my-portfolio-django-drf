@@ -1,7 +1,12 @@
 import base64
 import os
+from io import BytesIO
 from django.conf import settings
+from django.core.files.base import ContentFile
 from openai import OpenAI
+import markdown
+from xhtml2pdf import pisa
+from docx import Document
 
 from main.models import Profile
 from resume.models import Experience, Education, Skill
@@ -102,3 +107,71 @@ def generate_application_documents(job_description_text, job_image_path=None):
     except Exception as e:
         error_msg = f"Error generating documents via OpenAI: {str(e)}"
         return error_msg, error_msg
+
+def create_pdf(text, filename_prefix="document"):
+    html_content = markdown.markdown(text)
+    styled_html = f"<html><head><style>body {{ font-family: Helvetica, Arial, sans-serif; font-size: 11pt; line-height: 1.4; }}</style></head><body>{html_content}</body></html>"
+    result = BytesIO()
+    pdf = pisa.pisaDocument(BytesIO(styled_html.encode("UTF-8")), result)
+    if not pdf.err:
+        return ContentFile(result.getvalue(), name=f"{filename_prefix}.pdf")
+    return None
+
+def create_docx(text, filename_prefix="document"):
+    document = Document()
+    # Simple markdown to docx converter
+    for line in text.split('\n'):
+        if line.startswith('# '):
+            document.add_heading(line[2:], level=1)
+        elif line.startswith('## '):
+            document.add_heading(line[3:], level=2)
+        elif line.startswith('### '):
+            document.add_heading(line[4:], level=3)
+        elif line.startswith('- '):
+            document.add_paragraph(line[2:], style='List Bullet')
+        elif line.startswith('**') and line.endswith('**'):
+            p = document.add_paragraph()
+            p.add_run(line[2:-2]).bold = True
+        elif line.strip():
+            document.add_paragraph(line)
+            
+    result = BytesIO()
+    document.save(result)
+    return ContentFile(result.getvalue(), name=f"{filename_prefix}.docx")
+
+def process_job_application_task(application_id):
+    from .models import JobApplication
+    try:
+        app = JobApplication.objects.get(id=application_id)
+        if app.status != 'draft':
+            return
+            
+        # Optional: wait briefly to ensure file is completely saved to disk
+        import time
+        time.sleep(1)
+        
+        image_path = app.job_description_image.path if app.job_description_image else None
+        cv, cl = generate_application_documents(app.job_description_text, image_path)
+        
+        app.generated_cv = cv
+        app.generated_cover_letter = cl
+        
+        # Generate files
+        if cv:
+            pdf_file = create_pdf(cv, "cv")
+            if pdf_file: app.cv_pdf.save(f"CV_{app.company_name.replace(' ', '_')}.pdf", pdf_file, save=False)
+            docx_file = create_docx(cv, "cv")
+            if docx_file: app.cv_word.save(f"CV_{app.company_name.replace(' ', '_')}.docx", docx_file, save=False)
+            
+        if cl:
+            cl_pdf = create_pdf(cl, "cover_letter")
+            if cl_pdf: app.cover_letter_pdf.save(f"Cover_Letter_{app.company_name.replace(' ', '_')}.pdf", cl_pdf, save=False)
+            cl_docx = create_docx(cl, "cover_letter")
+            if cl_docx: app.cover_letter_word.save(f"Cover_Letter_{app.company_name.replace(' ', '_')}.docx", cl_docx, save=False)
+            
+        if "Error generating documents" not in cl:
+            app.status = 'generated'
+        
+        app.save()
+    except Exception as e:
+        print(f"Error in AI background task: {e}")
