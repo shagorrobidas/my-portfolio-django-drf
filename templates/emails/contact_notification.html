@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>New Contact Message</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: #0b0f19;
+            color: #f3f4f6;
+            margin: 0;
+            padding: 0;
+            -webkit-font-smoothing: antialiased;
+        }
+        .container {
+            max-width: 600px;
+            margin: 40px auto;
+            padding: 30px;
+            background: linear-gradient(145deg, #111827, #1f2937);
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+        .header {
+            text-align: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding-bottom: 20px;
+            margin-bottom: 25px;
+        }
+        .header h2 {
+            margin: 0;
+            color: #38bdf8;
+            font-size: 24px;
+            font-weight: 700;
+            letter-spacing: -0.025em;
+        }
+        .info-grid {
+            margin-bottom: 25px;
+        }
+        .info-row {
+            margin-bottom: 15px;
+        }
+        .label {
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: #9ca3af;
+            margin-bottom: 4px;
+        }
+        .value {
+            font-size: 16px;
+            color: #f3f4f6;
+            font-weight: 500;
+        }
+        .message-box {
+            background-color: rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 10px;
+            font-size: 15px;
+            line-height: 1.6;
+            color: #d1d5db;
+            white-space: pre-wrap;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 35px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            font-size: 12px;
+            color: #6b7280;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h2>New Portfolio Message Received</h2>
+        </div>
+        <div class="info-grid">
+            <div class="info-row">
+                <div class="label">Sender Name</div>
+                <div class="value">{{ full_name }}</div>
+            </div>
+            <div class="info-row">
+                <div class="label">Email Address</div>
+                <div class="value"><a href="mailto:{{ email }}" style="color: #38bdf8; text-decoration: none;">{{ email }}</a></div>
+            </div>
+            <div class="info-row">
+                <div class="label">Subject</div>
+                <div class="value">{{ subject }}</div>
+            </div>
+            <div class="info-row" style="margin-bottom: 0;">
+                <div class="label">Message</div>
+                <div class="message-box">{{ message }}</div>
+            </div>
+        </div>
+        <div class="footer">
+            This notification was generated automatically by your Portfolio website.
+        </div>
+    </div>
+</body>
+</html>
