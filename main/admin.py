@@ -1,16 +1,22 @@
 from django.contrib import admin
 from django.utils.html import format_html
+from unfold.admin import ModelAdmin, TabularInline
 from main.models import (
     ContactMessage,
     Profile,
+    ProfileSection,
+    ProfileTitle,
     Service,
     Testimonial,
     Client,
     SocialLink
 )
 
+# ... (rest unchanged, skipping registration declarations for Client and SocialLink) ...
+
+
 @admin.register(Client)
-class ClientAdmin(admin.ModelAdmin):
+class ClientAdmin(ModelAdmin):
     list_display = ('name', 'url', 'display_logo', 'order')
     list_editable = ('order',)
     search_fields = ('name',)
@@ -22,7 +28,7 @@ class ClientAdmin(admin.ModelAdmin):
     display_logo.short_description = 'Logo Preview'
 
 @admin.register(SocialLink)
-class SocialLinkAdmin(admin.ModelAdmin):
+class SocialLinkAdmin(ModelAdmin):
     list_display = ('name', 'url', 'display_icon', 'order')
     list_editable = ('order',)
     search_fields = ('name',)
@@ -31,12 +37,25 @@ class SocialLinkAdmin(admin.ModelAdmin):
         return format_html('<i class="{}"></i>', obj.icon)
     display_icon.short_description = 'Icon'
 
+class ProfileSectionInline(TabularInline):
+    model = ProfileSection
+    extra = 1
+    fields = ('title', 'content', 'order')
+
+
+class ProfileTitleInline(TabularInline):
+    model = ProfileTitle
+    extra = 1
+    fields = ('title', 'order')
+
+
 @admin.register(Profile)
-class ProfileAdmin(admin.ModelAdmin):
+class ProfileAdmin(ModelAdmin):
     list_display = ('name', 'title', 'email', 'display_avatar')
     list_filter = ('name',)
     search_fields = ('name', 'title', 'email')
     ordering = ('name',)
+    inlines = [ProfileTitleInline, ProfileSectionInline]
 
     fieldsets = (
         ('Basic Information', {
@@ -57,7 +76,7 @@ class ProfileAdmin(admin.ModelAdmin):
     display_avatar.short_description = 'Avatar'
 
 @admin.register(Service)
-class ServiceAdmin(admin.ModelAdmin):
+class ServiceAdmin(ModelAdmin):
     list_display = ('title', 'display_icon', 'description')
     list_filter = ('title',)
     search_fields = ('title', 'description')
@@ -68,7 +87,7 @@ class ServiceAdmin(admin.ModelAdmin):
     display_icon.short_description = 'Icon'
 
 @admin.register(Testimonial)
-class TestimonialAdmin(admin.ModelAdmin):
+class TestimonialAdmin(ModelAdmin):
     list_display = ('client_name', 'display_image', 'text')
     list_filter = ('client_name',)
     search_fields = ('client_name', 'text')
@@ -81,7 +100,7 @@ class TestimonialAdmin(admin.ModelAdmin):
     display_image.short_description = 'Image'
 
 @admin.register(ContactMessage)
-class ContactMessageAdmin(admin.ModelAdmin):
+class ContactMessageAdmin(ModelAdmin):
     list_display = ('full_name', 'email', 'subject', 'created_at')
     list_filter = ('created_at',)
     search_fields = ('full_name', 'email', 'message', 'subject')
