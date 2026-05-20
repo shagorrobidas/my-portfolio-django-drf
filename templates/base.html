@@ -199,7 +199,43 @@
             const profile = await fetchAPI('profile');
             if (profile) {
                 document.getElementById('profile-name').textContent = profile.name;
-                document.getElementById('profile-title').textContent = profile.title;
+                const titles = (profile.titles && profile.titles.length > 0)
+                    ? profile.titles
+                    : (profile.title ? profile.title.split(',').map(t => t.trim()) : ["Developer"]);
+                if (titles.length === 1) {
+                    document.getElementById('profile-title').textContent = titles[0];
+                } else {
+                    let titleIndex = 0;
+                    const titleEl = document.getElementById('profile-title');
+                    let currentTxt = '';
+                    let isDeleting = false;
+                    
+                    function type() {
+                        const fullTxt = titles[titleIndex];
+                        if (isDeleting) {
+                            currentTxt = fullTxt.substring(0, currentTxt.length - 1);
+                        } else {
+                            currentTxt = fullTxt.substring(0, currentTxt.length + 1);
+                        }
+                        
+                        titleEl.textContent = currentTxt;
+                        
+                        let typeSpeed = 100;
+                        if (isDeleting) { typeSpeed /= 2; }
+                        
+                        if (!isDeleting && currentTxt === fullTxt) {
+                            typeSpeed = 2000;
+                            isDeleting = true;
+                        } else if (isDeleting && currentTxt === '') {
+                            isDeleting = false;
+                            titleIndex = (titleIndex + 1) % titles.length;
+                            typeSpeed = 500;
+                        }
+                        
+                        setTimeout(type, typeSpeed);
+                    }
+                    type();
+                }
                 const emailLink = `mailto:${profile.email}`;
                 document.getElementById('profile-email').textContent = profile.email;
                 document.getElementById('profile-email-link').href = emailLink;
