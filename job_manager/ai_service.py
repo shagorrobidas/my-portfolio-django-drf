@@ -43,13 +43,17 @@ def get_portfolio_context():
 
 def generate_application_documents(job_description_text, job_image_path=None):
     """
-    Calls OpenAI to generate a tailored CV and Cover Letter.
-    Returns a tuple: (generated_cv, generated_cover_letter)
+    Calls OpenAI to generate a tailored CV, Cover Letter, outreach email, and strategic analysis report.
+    Returns a tuple: (generated_cv, generated_cover_letter, email_subject, email_body, analysis_report)
     """
     client = OpenAI(api_key=settings.OPENAI_API_KEY)
     
     # Base prompt
-    system_prompt = "You are an expert career coach and professional resume writer."
+    system_prompt = (
+        "You are an expert career coach, HR recruiter, and professional resume writer. "
+        "Your goal is to tailor the applicant's background to match the job post perfectly, "
+        "and draft high-converting application assets designed to get past ATS and secure an interview."
+    )
     context_str = get_portfolio_context()
     
     content_messages = [
@@ -72,7 +76,22 @@ def generate_application_documents(job_description_text, job_image_path=None):
 
     content_messages.append({
         "type": "text", 
-        "text": "Based strictly on my background and the provided job description, please write:\n1. A highly tailored professional Cover Letter.\n2. A tailored CV (Resume) highlighting the most relevant skills and experiences for this specific role.\nFormat your response EXACTLY as follows:\n[COVER LETTER START]\n(cover letter text here)\n[COVER LETTER END]\n\n[CV START]\n(cv text here)\n[CV END]"
+        "text": (
+            "Based strictly on my background and the provided job description, please write:\n"
+            "1. A highly tailored professional Cover Letter.\n"
+            "2. A tailored CV (Resume) highlighting the most relevant skills, projects, and experiences for this specific role.\n"
+            "3. An optimized, high-converting recruiter outreach/job application email (Subject and Body) designed for HR to instantly see the fit ('job crack version', well-organized).\n"
+            "4. A strategic AI Analysis Report explaining:\n"
+            "   - Key strengths/matches between the candidate and the role.\n"
+            "   - Important skills or topics to emphasize during the interview.\n"
+            "   - Strategic recommendations to crack this job application.\n\n"
+            "Format your response EXACTLY as follows:\n"
+            "[COVER LETTER START]\n(cover letter text here)\n[COVER LETTER END]\n\n"
+            "[CV START]\n(cv text here)\n[CV END]\n\n"
+            "[EMAIL SUBJECT START]\n(email subject here)\n[EMAIL SUBJECT END]\n\n"
+            "[EMAIL BODY START]\n(email body here)\n[EMAIL BODY END]\n\n"
+            "[ANALYSIS START]\n(strategic analysis report here)\n[ANALYSIS END]"
+        )
     })
 
     try:
@@ -82,7 +101,7 @@ def generate_application_documents(job_description_text, job_image_path=None):
                 {"role": "system", "content": system_prompt},
                 {"role": "user", "content": content_messages}
             ],
-            max_tokens=2500
+            max_tokens=3000
         )
         
         result_text = response.choices[0].message.content
@@ -90,6 +109,9 @@ def generate_application_documents(job_description_text, job_image_path=None):
         # Parse the response
         cover_letter = ""
         cv = ""
+        email_subject = ""
+        email_body = ""
+        analysis_report = ""
         
         if "[COVER LETTER START]" in result_text and "[COVER LETTER END]" in result_text:
             cover_letter = result_text.split("[COVER LETTER START]")[1].split("[COVER LETTER END]")[0].strip()
@@ -97,16 +119,25 @@ def generate_application_documents(job_description_text, job_image_path=None):
         if "[CV START]" in result_text and "[CV END]" in result_text:
             cv = result_text.split("[CV START]")[1].split("[CV END]")[0].strip()
             
+        if "[EMAIL SUBJECT START]" in result_text and "[EMAIL SUBJECT END]" in result_text:
+            email_subject = result_text.split("[EMAIL SUBJECT START]")[1].split("[EMAIL SUBJECT END]")[0].strip()
+
+        if "[EMAIL BODY START]" in result_text and "[EMAIL BODY END]" in result_text:
+            email_body = result_text.split("[EMAIL BODY START]")[1].split("[EMAIL BODY END]")[0].strip()
+
+        if "[ANALYSIS START]" in result_text and "[ANALYSIS END]" in result_text:
+            analysis_report = result_text.split("[ANALYSIS START]")[1].split("[ANALYSIS END]")[0].strip()
+
         # Fallback if AI didn't follow formatting strictly
         if not cover_letter or not cv:
             cover_letter = "Warning: Failed to parse format correctly. Raw output:\n\n" + result_text
             cv = result_text
             
-        return cv, cover_letter
+        return cv, cover_letter, email_subject, email_body, analysis_report
         
     except Exception as e:
         error_msg = f"Error generating documents via OpenAI: {str(e)}"
-        return error_msg, error_msg
+        return error_msg, error_msg, "Error", error_msg, error_msg
 
 def create_pdf(text, filename_prefix="document"):
     html_content = markdown.markdown(text)
@@ -151,10 +182,13 @@ def process_job_application_task(application_id):
         time.sleep(1)
         
         image_path = app.job_description_image.path if app.job_description_image else None
-        cv, cl = generate_application_documents(app.job_description_text, image_path)
+        cv, cl, subject, body, analysis = generate_application_documents(app.job_description_text, image_path)
         
         app.generated_cv = cv
         app.generated_cover_letter = cl
+        app.apply_email_subject = subject
+        app.apply_email_body = body
+        app.ai_analysis_report = analysis
         
         # Generate files
         if cv:
