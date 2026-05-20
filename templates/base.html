@@ -36,6 +36,7 @@
             transform: translateY(-2px);
             box-shadow: 0 8px 20px rgba(242, 193, 79, 0.25);
         }
+
         .cv-preview-btn:hover {
             border-color: rgba(255, 255, 255, 0.4) !important;
             background: rgba(255, 255, 255, 0.08) !important;
@@ -148,12 +149,15 @@
                     <!-- Will be loaded dynamically -->
                 </div>
 
-                <div id="cv-container" style="display: none; justify-content: center; gap: 8px; margin-top: 15px; flex-wrap: wrap;">
-                    <a id="profile-cv-link" href="#" class="cv-download-btn" download style="display: inline-flex; align-items: center; gap: 6px; padding: 10px 14px; border-radius: 12px; border: 1px solid var(--accent); background: rgba(242, 193, 79, 0.05); color: var(--accent); font-size: 11px; font-weight: 700; transition: all 0.3s ease; text-transform: uppercase; letter-spacing: 0.03em; margin-bottom: 10px;">
+                <div id="cv-container"
+                    style="display: none; justify-content: center; gap: 8px; margin-top: 15px; flex-wrap: wrap;">
+                    <a id="profile-cv-link" href="#" class="cv-download-btn" download
+                        style="display: inline-flex; align-items: center; gap: 6px; padding: 10px 14px; border-radius: 12px; border: 1px solid var(--accent); background: rgba(242, 193, 79, 0.05); color: var(--accent); font-size: 11px; font-weight: 700; transition: all 0.3s ease; text-transform: uppercase; letter-spacing: 0.03em; margin-bottom: 10px;">
                         <i class="fa-solid fa-download"></i>
                         <span>Download</span>
                     </a>
-                    <button id="profile-cv-preview-btn" class="cv-preview-btn" style="display: inline-flex; align-items: center; gap: 6px; padding: 10px 14px; border-radius: 12px; border: 1px solid rgba(255, 255, 255, 0.15); background: rgba(255, 255, 255, 0.03); color: #fff; font-size: 11px; font-weight: 700; transition: all 0.3s ease; text-transform: uppercase; letter-spacing: 0.03em; margin-bottom: 10px; cursor: pointer;">
+                    <button id="profile-cv-preview-btn" class="cv-preview-btn"
+                        style="display: inline-flex; align-items: center; gap: 6px; padding: 10px 14px; border-radius: 12px; border: 1px solid rgba(255, 255, 255, 0.15); background: rgba(255, 255, 255, 0.03); color: #fff; font-size: 11px; font-weight: 700; transition: all 0.3s ease; text-transform: uppercase; letter-spacing: 0.03em; margin-bottom: 10px; cursor: pointer;">
                         <i class="fa-solid fa-eye"></i>
                         <span>Preview</span>
                     </button>
@@ -176,7 +180,7 @@
                     <a href="{% url 'contact' %}"
                         class="{% if request.resolver_match.url_name == 'contact' %}active{% endif %}">Contact</a>
                     <a href="{% url 'job_apply' %}"
-                        class="{% if request.resolver_match.url_name == 'job_apply' %}active{% endif %}">Job Apply</a>
+                        class="{% if request.resolver_match.url_name == 'job_apply' %}active{% endif %}">AI</a>
                 </div>
             </div>
 
@@ -233,7 +237,7 @@
                     const titleEl = document.getElementById('profile-title');
                     let currentTxt = '';
                     let isDeleting = false;
-                    
+
                     function type() {
                         const fullTxt = titles[titleIndex];
                         if (isDeleting) {
@@ -241,12 +245,12 @@
                         } else {
                             currentTxt = fullTxt.substring(0, currentTxt.length + 1);
                         }
-                        
+
                         titleEl.textContent = currentTxt;
-                        
+
                         let typeSpeed = 100;
                         if (isDeleting) { typeSpeed /= 2; }
-                        
+
                         if (!isDeleting && currentTxt === fullTxt) {
                             typeSpeed = 2000;
                             isDeleting = true;
@@ -255,7 +259,7 @@
                             titleIndex = (titleIndex + 1) % titles.length;
                             typeSpeed = 500;
                         }
-                        
+
                         setTimeout(type, typeSpeed);
                     }
                     type();
@@ -314,14 +318,18 @@
 
     <!-- CV Preview Modal -->
     <div class="modal-overlay" id="cvPreviewModal">
-        <div class="modal-content" style="max-width: 900px; width: 95%; height: 85%; padding: 0; overflow: hidden; display: flex; flex-direction: column; text-align: left; background: #1e1e1f; border-radius: 20px;">
+        <div class="modal-content"
+            style="max-width: 900px; width: 95%; height: 85%; padding: 0; overflow: hidden; display: flex; flex-direction: column; text-align: left; background: #1e1e1f; border-radius: 20px;">
             <!-- Modal Header -->
-            <div style="display: flex; justify-content: space-between; align-items: center; padding: 16px 24px; border-bottom: 1px solid var(--stroke); background: #1e1e1f;">
-                <div style="font-size: 16px; font-weight: 700; color: #fff; display: flex; align-items: center; gap: 8px;">
+            <div
+                style="display: flex; justify-content: space-between; align-items: center; padding: 16px 24px; border-bottom: 1px solid var(--stroke); background: #1e1e1f;">
+                <div
+                    style="font-size: 16px; font-weight: 700; color: #fff; display: flex; align-items: center; gap: 8px;">
                     <i class="fa-solid fa-file-pdf" style="color: #ef4444; font-size: 18px;"></i>
                     <span>Curriculum Vitae (CV) Preview</span>
                 </div>
-                <button onclick="closeCvModal()" style="background: none; border: none; color: var(--muted); font-size: 20px; cursor: pointer; transition: color 0.2s;">
+                <button onclick="closeCvModal()"
+                    style="background: none; border: none; color: var(--muted); font-size: 20px; cursor: pointer; transition: color 0.2s;">
                     <i class="fa-solid fa-xmark"></i>
                 </button>
             </div>
