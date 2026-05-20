@@ -8,7 +8,8 @@ class Category(models.Model):
         return self.name
     
     class Meta:
-        verbose_name_plural = "Categories"
+        verbose_name = "Project Category"
+        verbose_name_plural = "Project Categories"
 
 
 class Project(models.Model):
