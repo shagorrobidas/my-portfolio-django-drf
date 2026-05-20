@@ -3,7 +3,11 @@ from django.db import models
 
 class Profile(models.Model):
     name = models.CharField(max_length=100, default="Your Name")
-    title = models.CharField(max_length=100, default="Python Backend Developer")
+    title = models.CharField(
+        max_length=300,
+        default="Python Backend Developer",
+        help_text="Comma-separated titles for typing rotation effect, e.g. Django Developer, Backend Engineer, Junior Software Engineer"
+    )
     avatar = models.ImageField(upload_to='profile/', blank=True, null=True)
     email = models.EmailField(default="you@email.com")
     linkedin_username = models.CharField(max_length=100, default="@yourhandle")
@@ -17,6 +21,31 @@ class Profile(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class ProfileTitle(models.Model):
+    profile = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name='titles')
+    title = models.CharField(max_length=150)
+    order = models.PositiveIntegerField(default=0)
+
+    class Meta:
+        ordering = ['order']
+
+    def __str__(self):
+        return self.title
+
+
+class ProfileSection(models.Model):
+    profile = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name='sections')
+    title = models.CharField(max_length=200, blank=True, null=True)
+    content = models.TextField()
+    order = models.PositiveIntegerField(default=0)
+
+    class Meta:
+        ordering = ['order']
+
+    def __str__(self):
+        return self.title or self.content[:50]
 
 
 class Service(models.Model):
