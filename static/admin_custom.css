@@ -148,3 +148,36 @@ html:not(.dark) input:not([type="checkbox"]):not([type="radio"]):focus, html:not
 html:not(.dark) tr:hover td, html:not(.dark) tr:hover th {
     background: rgba(20, 184, 166, 0.05) !important;
 }
+
+/* -----------------------------------------
+   LOGIN PAGE (Typography Sizing & Padding)
+   ----------------------------------------- */
+.login h1 span:first-child {
+    font-size: 1.25rem !important;
+    line-height: 1.75rem !important;
+}
+
+.login h1 span:last-child {
+    font-size: 1.875rem !important;
+    line-height: 2.25rem !important;
+}
+
+.login label {
+    font-size: 1rem !important;
+    margin-bottom: 0.25rem !important;
+}
+
+.login input[type="text"], 
+.login input[type="password"] {
+    font-size: 1rem !important;
+    padding: 0.75rem 1rem !important;
+}
+
+.login button[type="submit"] {
+    font-size: 1.125rem !important;
+    padding: 0.75rem 1.25rem !important;
+}
+
+.login button.absolute.right-3.top-1/2 {
+    right: 0.875rem !important;
+}
