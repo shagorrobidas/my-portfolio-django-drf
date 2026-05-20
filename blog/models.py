@@ -5,7 +5,8 @@ class Category(models.Model):
     name = models.CharField(max_length=100)
 
     class Meta:
-        verbose_name_plural = "Categories"
+        verbose_name = "Blog Category"
+        verbose_name_plural = "Blog Categories"
 
     def __str__(self):
         return self.name
