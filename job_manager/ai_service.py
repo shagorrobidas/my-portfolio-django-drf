@@ -44,7 +44,7 @@ def get_portfolio_context():
 def generate_application_documents(job_description_text, job_image_path=None):
     """
     Calls OpenAI to generate a tailored CV, Cover Letter, outreach email, and strategic analysis report.
-    Returns a tuple: (generated_cv, generated_cover_letter, email_subject, email_body, analysis_report)
+    Returns a tuple: (generated_cv, generated_cover_letter, email_subject, email_body, analysis_report, company_name, job_title, employer_email)
     """
     client = OpenAI(api_key=settings.OPENAI_API_KEY)
     
@@ -91,13 +91,19 @@ def generate_application_documents(job_description_text, job_image_path=None):
             "4. A strategic AI Analysis Report explaining:\n"
             "   - Key strengths/matches between the candidate and the role.\n"
             "   - Important skills or topics to emphasize during the interview.\n"
-            "   - Strategic recommendations to crack this job application.\n\n"
+            "   - Strategic recommendations to crack this job application.\n"
+            "5. Extract the Company Name, Job Title, and Recruiter/Company Email from the provided job post input.\n\n"
             "Format your response EXACTLY as follows:\n"
             "[COVER LETTER START]\n(cover letter text here)\n[COVER LETTER END]\n\n"
             "[CV START]\n(cv text here)\n[CV END]\n\n"
             "[EMAIL SUBJECT START]\n(email subject here)\n[EMAIL SUBJECT END]\n\n"
             "[EMAIL BODY START]\n(email body here)\n[EMAIL BODY END]\n\n"
-            "[ANALYSIS START]\n(strategic analysis report here)\n[ANALYSIS END]"
+            "[ANALYSIS START]\n(strategic analysis report here)\n[ANALYSIS END]\n\n"
+            "[METADATA START]\n"
+            "Company: (extracted company name, or 'Unknown Company')\n"
+            "Title: (extracted job title, or 'Software Developer')\n"
+            "Email: (extracted contact email, or leave empty if not found)\n"
+            "[METADATA END]"
         )
     })
 
@@ -119,6 +125,9 @@ def generate_application_documents(job_description_text, job_image_path=None):
         email_subject = ""
         email_body = ""
         analysis_report = ""
+        company_name = ""
+        job_title = ""
+        employer_email = ""
         
         if "[COVER LETTER START]" in result_text and "[COVER LETTER END]" in result_text:
             cover_letter = result_text.split("[COVER LETTER START]")[1].split("[COVER LETTER END]")[0].strip()
@@ -135,16 +144,26 @@ def generate_application_documents(job_description_text, job_image_path=None):
         if "[ANALYSIS START]" in result_text and "[ANALYSIS END]" in result_text:
             analysis_report = result_text.split("[ANALYSIS START]")[1].split("[ANALYSIS END]")[0].strip()
 
+        if "[METADATA START]" in result_text and "[METADATA END]" in result_text:
+            metadata_block = result_text.split("[METADATA START]")[1].split("[METADATA END]")[0].strip()
+            for line in metadata_block.split('\n'):
+                if line.startswith("Company:"):
+                    company_name = line.replace("Company:", "").strip()
+                elif line.startswith("Title:"):
+                    job_title = line.replace("Title:", "").strip()
+                elif line.startswith("Email:"):
+                    employer_email = line.replace("Email:", "").strip()
+
         # Fallback if AI didn't follow formatting strictly
         if not cover_letter or not cv:
             cover_letter = "Warning: Failed to parse format correctly. Raw output:\n\n" + result_text
             cv = result_text
             
-        return cv, cover_letter, email_subject, email_body, analysis_report
+        return cv, cover_letter, email_subject, email_body, analysis_report, company_name, job_title, employer_email
         
     except Exception as e:
         error_msg = f"Error generating documents via OpenAI: {str(e)}"
-        return error_msg, error_msg, "Error", error_msg, error_msg
+        return error_msg, error_msg, "Error", error_msg, error_msg, "Error", "Error", "error@company.com"
 
 def create_pdf(text, filename_prefix="document"):
     html_content = markdown.markdown(text)
@@ -189,8 +208,16 @@ def process_job_application_task(application_id):
         time.sleep(1)
         
         image_path = app.job_description_image.path if app.job_description_image else None
-        cv, cl, subject, body, analysis = generate_application_documents(app.job_description_text, image_path)
+        cv, cl, subject, body, analysis, ext_company, ext_title, ext_email = generate_application_documents(app.job_description_text, image_path)
         
+        # Populate extracted metadata if default or blank
+        if not app.company_name or app.company_name == "Pending AI...":
+            app.company_name = ext_company or "Unknown Company"
+        if not app.job_title or app.job_title == "Pending AI...":
+            app.job_title = ext_title or "Software Developer"
+        if not app.employer_email and ext_email:
+            app.employer_email = ext_email
+            
         app.generated_cv = cv
         app.generated_cover_letter = cl
         app.apply_email_subject = subject

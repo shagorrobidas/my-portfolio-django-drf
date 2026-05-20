@@ -12,8 +12,8 @@ class JobApplication(models.Model):
         ('emailed', 'Emailed'),
     ]
 
-    company_name = models.CharField(max_length=200)
-    job_title = models.CharField(max_length=200)
+    company_name = models.CharField(max_length=200, blank=True, default="Pending AI...")
+    job_title = models.CharField(max_length=200, blank=True, default="Pending AI...")
     employer_email = models.EmailField(blank=True, null=True)
     
     # Input

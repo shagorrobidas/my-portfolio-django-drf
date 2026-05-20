@@ -15,33 +15,47 @@
             <form class="form" id="jobForm" enctype="multipart/form-data">
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; width: 100%;">
                     <div class="field">
-                        <label>COMPANY NAME</label>
-                        <input name="company_name" required placeholder="e.g. Ayisha Soft" />
+                        <label>COMPANY NAME (AUTO-DETECTED BY AI)</label>
+                        <input name="company_name" placeholder="Leave blank to auto-detect" />
                     </div>
                     <div class="field">
-                        <label>JOB TITLE</label>
-                        <input name="job_title" required placeholder="e.g. Backend Developer" />
+                        <label>JOB TITLE (AUTO-DETECTED BY AI)</label>
+                        <input name="job_title" placeholder="Leave blank to auto-detect" />
                     </div>
                 </div>
                 
                 <div class="field" style="margin-top: 1.5rem;">
-                    <label>EMPLOYER EMAIL (OPTIONAL)</label>
-                    <input name="employer_email" type="email" placeholder="career@company.com" />
+                    <label>EMPLOYER EMAIL (OPTIONAL - AUTO-DETECTED BY AI)</label>
+                    <input name="employer_email" type="email" placeholder="Leave blank to auto-detect or enter contact" />
                 </div>
                 
-                <div class="field" style="margin-top: 1.5rem;">
-                    <label>JOB DESCRIPTION TEXT</label>
-                    <textarea name="job_description_text" placeholder="Paste the job requirements, details, and description here..."></textarea>
+                <!-- Toggle Mode Selector -->
+                <div style="display: flex; gap: 0.5rem; margin-top: 1.75rem; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 0.5rem;">
+                    <button type="button" id="toggle-text-btn" class="toggle-input-btn active-toggle" onclick="switchInputMode('text')">
+                        <i class="fa-solid fa-align-left"></i> Paste Job Description
+                    </button>
+                    <button type="button" id="toggle-image-btn" class="toggle-input-btn" onclick="switchInputMode('image')">
+                        <i class="fa-solid fa-image"></i> Upload Job Screenshot
+                    </button>
                 </div>
                 
-                <div class="field" style="margin-top: 1.5rem;">
-                    <label>OR UPLOAD JOB POST IMAGE</label>
-                    <div class="file-upload-wrapper">
-                        <input type="file" name="job_description_image" id="file-input" accept="image/*" />
-                        <label for="file-input" class="file-upload-btn">
-                            <i class="fa-solid fa-cloud-arrow-up"></i> Choose Screenshot / Image
-                        </label>
-                        <span id="file-name" class="file-name">No file chosen</span>
+                <div id="input-mode-text" style="margin-top: 1.25rem;">
+                    <div class="field">
+                        <label>JOB DESCRIPTION TEXT</label>
+                        <textarea name="job_description_text" placeholder="Paste the job requirements, details, and description here..."></textarea>
+                    </div>
+                </div>
+                
+                <div id="input-mode-image" style="margin-top: 1.25rem; display: none;">
+                    <div class="field">
+                        <label>UPLOAD JOB POST IMAGE</label>
+                        <div class="file-upload-wrapper">
+                            <input type="file" name="job_description_image" id="file-input" accept="image/*" />
+                            <label for="file-input" class="file-upload-btn">
+                                <i class="fa-solid fa-cloud-arrow-up"></i> Choose Screenshot / Image
+                            </label>
+                            <span id="file-name" class="file-name">No file chosen</span>
+                        </div>
                     </div>
                 </div>
 
@@ -228,6 +242,38 @@
     }
     .expand-btn:hover {
         color: #fff !important;
+    }
+    .toggle-input-btn {
+        background: none;
+        border: none;
+        color: rgba(255, 255, 255, 0.4);
+        font-size: 0.85rem;
+        font-weight: 600;
+        cursor: pointer;
+        padding: 0.5rem 1rem;
+        position: relative;
+        transition: all 0.2s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        border-radius: 6px;
+    }
+    .toggle-input-btn:hover {
+        color: rgba(255, 255, 255, 0.85);
+        background: rgba(255, 255, 255, 0.03);
+    }
+    .toggle-input-btn.active-toggle {
+        color: #fff !important;
+        background: rgba(255, 255, 255, 0.06);
+    }
+    .toggle-input-btn.active-toggle::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 15%;
+        width: 70%;
+        height: 2px;
+        background: var(--accent);
     }
 </style>
 {% endblock %}
@@ -452,8 +498,99 @@
     }
 
     // Submit Job Application Form
+    let currentInputMode = 'text';
+
+    function switchInputMode(mode) {
+        currentInputMode = mode;
+        const textBtn = document.getElementById('toggle-text-btn');
+        const imageBtn = document.getElementById('toggle-image-btn');
+        const textContainer = document.getElementById('input-mode-text');
+        const imageContainer = document.getElementById('input-mode-image');
+        
+        const textArea = textContainer.querySelector('textarea');
+        const fileInputEl = imageContainer.querySelector('input[type="file"]');
+        
+        if (mode === 'text') {
+            textContainer.style.display = 'block';
+            imageContainer.style.display = 'none';
+            
+            textBtn.classList.add('active-toggle');
+            imageBtn.classList.remove('active-toggle');
+            
+            // Clear the other field to avoid posting both
+            fileInputEl.value = '';
+            document.getElementById('file-name').textContent = 'No file chosen';
+        } else {
+            textContainer.style.display = 'none';
+            imageContainer.style.display = 'block';
+            
+            imageBtn.classList.add('active-toggle');
+            textBtn.classList.remove('active-toggle');
+            
+            // Clear the other field to avoid posting both
+            textArea.value = '';
+        }
+    }
+
+    function showToast(message, type = 'error') {
+        const toast = document.createElement('div');
+        toast.style.position = 'fixed';
+        toast.style.bottom = '2rem';
+        toast.style.right = '2rem';
+        toast.style.background = type === 'success' ? '#2ecc71' : '#e74c3c';
+        toast.style.color = '#fff';
+        toast.style.padding = '1rem 1.5rem';
+        toast.style.borderRadius = '8px';
+        toast.style.boxShadow = '0 10px 30px rgba(0,0,0,0.5)';
+        toast.style.zIndex = '99999';
+        toast.style.fontSize = '0.9rem';
+        toast.style.fontWeight = '600';
+        toast.style.display = 'flex';
+        toast.style.alignItems = 'center';
+        toast.style.gap = '0.5rem';
+        toast.style.transition = 'all 0.3s ease';
+        toast.style.transform = 'translateY(100px)';
+        toast.style.opacity = '0';
+        
+        const icon = type === 'success' ? '<i class="fa-solid fa-circle-check"></i>' : '<i class="fa-solid fa-triangle-exclamation"></i>';
+        toast.innerHTML = `${icon} <span>${message}</span>`;
+        
+        document.body.appendChild(toast);
+        
+        // Trigger reflow/animation
+        setTimeout(() => {
+            toast.style.transform = 'translateY(0)';
+            toast.style.opacity = '1';
+        }, 50);
+        
+        // Remove toast
+        setTimeout(() => {
+            toast.style.transform = 'translateY(100px)';
+            toast.style.opacity = '0';
+            setTimeout(() => {
+                toast.remove();
+            }, 300);
+        }, 4000);
+    }
+
     document.getElementById('jobForm').addEventListener('submit', async (e) => {
         e.preventDefault();
+        
+        // Validation check based on mode
+        if (currentInputMode === 'text') {
+            const textVal = e.target.querySelector('textarea[name="job_description_text"]').value.trim();
+            if (!textVal) {
+                showToast('Please paste the job description text.');
+                return;
+            }
+        } else {
+            const fileVal = document.getElementById('file-input').files[0];
+            if (!fileVal) {
+                showToast('Please upload a job post screenshot or image.');
+                return;
+            }
+        }
+
         const btn = e.target.querySelector('button');
         const originalText = btn.innerHTML;
         btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Triggering AI Recruiter...';
@@ -470,13 +607,15 @@
             if (resp.ok) {
                 e.target.reset();
                 fileNameSpan.textContent = 'No file chosen';
+                switchInputMode('text');
                 loadApplications(); // Reload applications list
+                showToast('AI generation triggered successfully!', 'success');
             } else {
-                alert('Failed to trigger AI generator. Check your settings.');
+                showToast('Failed to trigger AI generator. Check your settings.');
             }
         } catch (err) {
             console.error('Error submitting form:', err);
-            alert('An error occurred. Check server connection.');
+            showToast('An error occurred. Check server connection.');
         } finally {
             btn.innerHTML = originalText;
             btn.disabled = false;
