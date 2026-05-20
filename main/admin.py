@@ -59,7 +59,7 @@ class ProfileAdmin(ModelAdmin):
 
     fieldsets = (
         ('Basic Information', {
-            'fields': ('name', 'title', 'avatar', 'birthday', 'location')
+            'fields': ('name', 'title', 'avatar', 'cv', 'birthday', 'location')
         }),
         ('Contact Information', {
             'fields': ('email', 'linkedin_username', 'linkedin_url', 'github_username', 'github_url')
