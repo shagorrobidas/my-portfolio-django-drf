@@ -1,4 +1,9 @@
 from django.db import models
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+from django.db import transaction
+import threading
+
 
 class JobApplication(models.Model):
     STATUS_CHOICES = [
@@ -18,6 +23,9 @@ class JobApplication(models.Model):
     # Output text
     generated_cv = models.TextField(blank=True, help_text="AI Generated CV matching the job description.")
     generated_cover_letter = models.TextField(blank=True, help_text="AI Generated Cover Letter.")
+    apply_email_subject = models.CharField(max_length=255, blank=True, help_text="AI Generated application email subject.")
+    apply_email_body = models.TextField(blank=True, help_text="AI Generated application email body.")
+    ai_analysis_report = models.TextField(blank=True, help_text="AI Strategic Analysis: how to crack this job, key skills, and strategy.")
     
     # Output Files
     cv_pdf = models.FileField(upload_to='generated_docs/cv/pdf/', blank=True, null=True)
@@ -31,10 +39,7 @@ class JobApplication(models.Model):
     def __str__(self):
         return f"{self.job_title} at {self.company_name}"
 
-from django.db.models.signals import post_save
-from django.dispatch import receiver
-from django.db import transaction
-import threading
+
 
 @receiver(post_save, sender=JobApplication)
 def trigger_ai_generation(sender, instance, created, **kwargs):
