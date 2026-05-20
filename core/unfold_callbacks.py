@@ -33,7 +33,7 @@ def dashboard_callback(request, context):
             },
             {
                 "title": "AI Jobs Applied",
-                "metric": JobApplication.objects.filter(status='emailed').count(),
+                "metric": JobApplication.objects.count(),
                 "footer": "OpenAI Applications",
                 "icon": "smart_toy"
             },
