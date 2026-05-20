@@ -32,7 +32,66 @@
     <div class="flex flex-col lg:flex-row lg:gap-8 mt-12">
         <div class="grow">
             <h2 class="text-xl font-bold text-gray-900 dark:text-gray-100 mb-4">Manage Applications</h2>
-            {% include "unfold/helpers/app_list_default.html" %}
+            
+            {% if app_list %}
+                <div class="grid grid-cols-1 gap-6">
+                    {% for app in app_list %}
+                        <div class="bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-800 p-6 shadow-sm">
+                            <h3 class="font-bold text-gray-950 dark:text-gray-50 mb-3 text-base tracking-tight border-b border-gray-100 dark:border-gray-800 pb-2">
+                                <a href="{{ app.app_url }}" class="hover:text-primary-600 dark:hover:text-primary-400 transition-colors">
+                                    {{ app.name }}
+                                </a>
+                            </h3>
+                            <table class="w-full text-sm border-spacing-none">
+                                <tbody>
+                                    {% for model in app.models %}
+                                        <tr class="hover:bg-gray-50/50 dark:hover:bg-gray-800/30 transition-colors">
+                                            {% if model.admin_url %}
+                                                <th scope="row" class="font-normal py-3 text-left {% if not forloop.last %}border-b border-gray-100 dark:border-gray-800{% endif %}">
+                                                    <a href="{{ model.admin_url }}"{% if model.admin_url in request.path %} aria-current="page"{% endif %} class="text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400">
+                                                        {{ model.name }}
+                                                    </a>
+                                                </th>
+                                            {% else %}
+                                                <th scope="row" class="font-normal py-3 text-left {% if not forloop.last %}border-b border-gray-100 dark:border-gray-800{% endif %}">
+                                                    {{ model.name }}
+                                                </th>
+                                            {% endif %}
+
+                                            <td class="{% if not forloop.last %}border-b border-gray-100 dark:border-gray-800{% endif %} py-3 text-right">
+                                                <div class="flex flex-row items-center ml-auto gap-4 justify-end">
+                                                    {% if model.add_url %}
+                                                        <a href="{{ model.add_url }}" class="addlink block leading-none text-base-400 hover:text-primary-600 transition-colors dark:text-base-500 dark:hover:text-primary-400" title="{% translate 'Add' %}">
+                                                            <span class="material-symbols-outlined text-lg">add</span>
+                                                        </a>
+                                                    {% endif %}
+
+                                                    {% if model.admin_url %}
+                                                        {% if model.view_only %}
+                                                            <a href="{{ model.admin_url }}" class="viewlink block leading-none text-base-400 hover:text-primary-600 transition-colors dark:text-base-500 dark:hover:text-primary-400" title="{% translate 'View' %}">
+                                                                <span class="material-symbols-outlined text-lg">visibility</span>
+                                                            </a>
+                                                        {% else %}
+                                                            <a href="{{ model.admin_url }}" class="changelink block leading-none text-base-400 hover:text-primary-600 transition-colors dark:text-base-300 dark:hover:text-primary-400" title="{% translate 'Change' %}">
+                                                                <span class="material-symbols-outlined text-lg">edit_square</span>
+                                                            </a>
+                                                        {% endif %}
+                                                    {% endif %}
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <p>
+                    {% translate "You don’t have permission to view or edit anything." as error_message %}
+                    {% include "unfold/helpers/messages/error.html" with error=error_message %}
+                </p>
+            {% endif %}
         </div>
         
         <div class="w-full lg:w-96">
