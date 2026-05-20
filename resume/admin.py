@@ -1,9 +1,10 @@
 from django.contrib import admin
+from unfold.admin import ModelAdmin
 from resume.models import Education, Experience, Skill
 
 
 @admin.register(Education)
-class EducationAdmin(admin.ModelAdmin):
+class EducationAdmin(ModelAdmin):
     list_display = ('degree', 'institution', 'start_date', 'end_date', 'order')
     list_editable = ('order',)
     list_filter = ('institution', 'degree')
@@ -12,7 +13,7 @@ class EducationAdmin(admin.ModelAdmin):
 
 
 @admin.register(Experience)
-class ExperienceAdmin(admin.ModelAdmin):
+class ExperienceAdmin(ModelAdmin):
     list_display = ('role', 'company', 'start_date', 'end_date', 'order')
     list_editable = ('order',)
     list_filter = ('company',)
@@ -21,7 +22,7 @@ class ExperienceAdmin(admin.ModelAdmin):
 
 
 @admin.register(Skill)
-class SkillAdmin(admin.ModelAdmin):
+class SkillAdmin(ModelAdmin):
     list_display = ('name', 'proficiency')
     list_editable = ('proficiency',)
     search_fields = ('name',)
