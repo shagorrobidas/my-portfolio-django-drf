@@ -3,8 +3,8 @@ from django.urls import reverse_lazy
 from django.utils.translation import gettext_lazy as _
 
 UNFOLD = {
-    "SITE_TITLE": _("My Portfolio Admin"),
-    "SITE_HEADER": _("My Portfolio"),
+    "SITE_TITLE": _("Portfolio Admin"),
+    "SITE_HEADER": _("Portfolio"),
     "SITE_URL": "/",
     "SITE_SYMBOL": "speed",
     "SITE_FAVICONS": [
@@ -20,6 +20,9 @@ UNFOLD = {
     "DASHBOARD_CALLBACK": "core.unfold_callbacks.dashboard_callback",
     "STYLES": [
         lambda request: static("admin_custom.css"),
+    ],
+    "SCRIPTS": [
+        lambda request: static("admin_custom.js"),
     ],
     "COLORS": {
         "primary": {
@@ -37,7 +40,7 @@ UNFOLD = {
         },
     },
     "LOGIN": {
-        "image": lambda request: static("admin_bg.png"),
+        "image": None,
         "form": "core.forms.CustomAdminAuthenticationForm",
     },
     "SIDEBAR": {
