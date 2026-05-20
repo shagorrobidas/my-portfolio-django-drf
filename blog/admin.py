@@ -1,9 +1,10 @@
 from django.contrib import admin
 from django.utils.html import format_html
+from unfold.admin import ModelAdmin
 from blog.models import Post, Category
 
 @admin.register(Post)
-class PostAdmin(admin.ModelAdmin):
+class PostAdmin(ModelAdmin):
     list_display = ('title', 'display_image', 'get_categories', 'date')
     search_fields = ('title', 'summary', 'content')
     list_filter = ('date', 'categories')
@@ -21,7 +22,7 @@ class PostAdmin(admin.ModelAdmin):
 
 
 @admin.register(Category)
-class CategoryAdmin(admin.ModelAdmin):
+class CategoryAdmin(ModelAdmin):
     list_display = ('name',)
     search_fields = ('name',)
 
