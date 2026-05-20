@@ -29,6 +29,14 @@
     {% endif %}
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
     <link rel="stylesheet" href="{% static 'css/style.css' %}" />
+    <style>
+        .cv-download-btn:hover {
+            background: var(--accent) !important;
+            color: #12151a !important;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(242, 193, 79, 0.25);
+        }
+    </style>
 </head>
 
 <body>
@@ -133,6 +141,13 @@
 
                 <div class="social">
                     <!-- Will be loaded dynamically -->
+                </div>
+
+                <div id="cv-container" style="text-align: center; margin-top: 15px; display: none;">
+                    <a id="profile-cv-link" href="#" class="cv-download-btn" download style="display: inline-flex; align-items: center; gap: 8px; padding: 10px 22px; border-radius: 12px; border: 1px solid var(--accent); background: rgba(242, 193, 79, 0.05); color: var(--accent); font-size: 13px; font-weight: 600; transition: all 0.3s ease; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 10px;">
+                        <i class="fa-solid fa-download"></i>
+                        <span>Download CV</span>
+                    </a>
                 </div>
             </div>
         </aside>
@@ -256,6 +271,12 @@
                 document.getElementById('profile-location').textContent = profile.location;
                 document.getElementById('profile-birthday').textContent = formatDate(profile.birthday);
                 if (profile.avatar) document.getElementById('profile-avatar').src = profile.avatar;
+                if (profile.cv) {
+                    document.getElementById('profile-cv-link').href = profile.cv;
+                    document.getElementById('cv-container').style.display = 'block';
+                } else {
+                    document.getElementById('cv-container').style.display = 'none';
+                }
             }
 
             const socialLinks = await fetchAPI('social-links');
