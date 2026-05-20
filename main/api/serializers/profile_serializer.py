@@ -33,6 +33,7 @@ class ProfileSerializer(serializers.ModelSerializer):
             'location',
             'about_text',
             'about_text_extra',
+            'cv',
             'sections'
         ]
         read_only_fields = ('id',)
