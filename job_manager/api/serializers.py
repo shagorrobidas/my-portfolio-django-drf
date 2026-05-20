@@ -8,11 +8,13 @@ class JobApplicationSerializer(serializers.ModelSerializer):
             'id', 'company_name', 'job_title', 'employer_email', 
             'job_description_text', 'job_description_image',
             'generated_cv', 'generated_cover_letter',
+            'apply_email_subject', 'apply_email_body', 'ai_analysis_report',
             'cv_pdf', 'cv_word', 'cover_letter_pdf', 'cover_letter_word',
             'status', 'created_at'
         ]
         read_only_fields = [
             'generated_cv', 'generated_cover_letter',
+            'apply_email_subject', 'apply_email_body', 'ai_analysis_report',
             'cv_pdf', 'cv_word', 'cover_letter_pdf', 'cover_letter_word',
             'status', 'created_at'
         ]
