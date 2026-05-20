@@ -18,6 +18,7 @@ class Profile(models.Model):
     location = models.CharField(max_length=200, default="Your City, Country")
     about_text = models.TextField(blank=True)
     about_text_extra = models.TextField(blank=True)
+    cv = models.FileField(upload_to='cv/', blank=True, null=True, help_text="Upload your CV/Resume PDF")
 
     def __str__(self):
         return self.name
