@@ -25,7 +25,7 @@ admin.site.site_title = "Portfolio Admin Portal"
 admin.site.index_title = "Welcome to your Portfolio Management"
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
+    path('manage-portfolio/', admin.site.urls),
     path('api/v1/', include('api.urls')),
     path('', views.home, name='home'),
     path('portfolio/', views.portfolio, name='portfolio'),
