@@ -216,6 +216,19 @@
         padding: 3rem;
         font-size: 1.1rem;
     }
+    .tab-link {
+        border-radius: 6px;
+        font-family: inherit;
+        border: none;
+        outline: none;
+    }
+    .tab-link.active {
+        background: rgba(255, 255, 255, 0.08) !important;
+        color: #fff !important;
+    }
+    .expand-btn:hover {
+        color: #fff !important;
+    }
 </style>
 {% endblock %}
 
@@ -278,6 +291,65 @@
             const clPdf = app.cover_letter_pdf ? `<a href="${app.cover_letter_pdf}" target="_blank" class="download-btn pdf"><i class="fa-regular fa-file-pdf"></i> Download Cover Letter (PDF)</a>` : '';
             const clDocx = app.cover_letter_word ? `<a href="${app.cover_letter_word}" target="_blank" class="download-btn word"><i class="fa-regular fa-file-word"></i> Download Cover Letter (Word)</a>` : '';
 
+            const expandedPanel = app.status !== 'draft' ? `
+                <div class="app-downloads">
+                    ${cvPdf} ${cvDocx} ${clPdf} ${clDocx}
+                </div>
+                <div class="expand-toggle-wrapper" style="margin-top: 1rem; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 1rem;">
+                    <button class="expand-btn" onclick="toggleDetails(${app.id})" style="background: none; border: none; color: var(--accent); font-size: 0.85rem; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; padding: 0; transition: color 0.2s;">
+                        <i class="fa-solid fa-chevron-down" id="chevron-${app.id}"></i> View AI Strategy & Application Assets
+                    </button>
+                    
+                    <div id="details-${app.id}" class="details-panel" style="display: none; margin-top: 1rem; background: rgba(0,0,0,0.15); border-radius: 8px; border: 1px solid rgba(255,255,255,0.04); padding: 1.25rem;">
+                        <!-- Tab Headers -->
+                        <div class="tab-headers" style="display: flex; gap: 8px; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 8px; margin-bottom: 1rem;">
+                            <button class="tab-link active" onclick="switchTab(event, 'strategy-${app.id}')" style="background: rgba(255, 255, 255, 0.08); border: none; color: #fff; padding: 6px 12px; font-size: 0.8rem; font-weight: 600; cursor: pointer; border-radius: 4px; transition: all 0.2s;">Strategy & Match</button>
+                            <button class="tab-link" onclick="switchTab(event, 'outreach-${app.id}')" style="background: none; border: none; color: rgba(255,255,255,0.6); padding: 6px 12px; font-size: 0.8rem; font-weight: 600; cursor: pointer; border-radius: 4px; transition: all 0.2s;">Outreach Email</button>
+                            <button class="tab-link" onclick="switchTab(event, 'cv-${app.id}')" style="background: none; border: none; color: rgba(255,255,255,0.6); padding: 6px 12px; font-size: 0.8rem; font-weight: 600; cursor: pointer; border-radius: 4px; transition: all 0.2s;">Generated CV & Cover Letter</button>
+                        </div>
+                        
+                        <!-- Tab Content: Strategy -->
+                        <div id="strategy-${app.id}" class="tab-content" style="display: block;">
+                            <h4 style="color: #fff; font-size: 0.9rem; margin: 0 0 0.5rem 0;">AI Strategic Analysis & Interview Coach</h4>
+                            <div style="background: rgba(0,0,0,0.25); padding: 1rem; border-radius: 6px; border: 1px solid rgba(255,255,255,0.03); max-height: 250px; overflow-y: auto; white-space: pre-wrap; font-size: 0.85rem; line-height: 1.5; color: rgba(255,255,255,0.85);">
+                                ${app.ai_analysis_report ? app.ai_analysis_report : 'No analysis generated.'}
+                            </div>
+                        </div>
+                        
+                        <!-- Tab Content: Outreach -->
+                        <div id="outreach-${app.id}" class="tab-content" style="display: none;">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                                <h4 style="color: #fff; font-size: 0.9rem; margin: 0;">HR Outreach Email</h4>
+                                <button onclick="copyToClipboard(event, ${app.id})" style="background: rgba(242, 193, 79, 0.1); border: 1px solid var(--accent); color: var(--accent); font-size: 0.75rem; padding: 4px 8px; border-radius: 4px; cursor: pointer; transition: all 0.2s; display: inline-flex; align-items: center; gap: 4px;">
+                                    <i class="fa-regular fa-copy"></i> Copy Full Email
+                                </button>
+                            </div>
+                            <div style="display: flex; flex-direction: column; gap: 8px;">
+                                <div style="display: flex; gap: 8px; align-items: center; background: rgba(0,0,0,0.2); padding: 8px 12px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.03);">
+                                    <span style="font-size: 0.8rem; font-weight: bold; color: var(--accent); min-width: 60px;">Subject:</span>
+                                    <span id="subject-${app.id}" style="font-size: 0.85rem; color: #fff;">${app.apply_email_subject ? app.apply_email_subject : `Application for ${app.job_title}`}</span>
+                                </div>
+                                <div id="body-${app.id}" style="background: rgba(0,0,0,0.25); padding: 1rem; border-radius: 6px; border: 1px solid rgba(255,255,255,0.03); max-height: 200px; overflow-y: auto; white-space: pre-wrap; font-size: 0.85rem; line-height: 1.5; color: rgba(255,255,255,0.85);">${app.apply_email_body ? app.apply_email_body : app.generated_cover_letter}</div>
+                            </div>
+                        </div>
+                        
+                        <!-- Tab Content: CV / CL Text -->
+                        <div id="cv-${app.id}" class="tab-content" style="display: none;">
+                            <div style="display: flex; gap: 1rem; flex-direction: column;">
+                                <div>
+                                    <h5 style="color: #fff; font-size: 0.8rem; margin: 0 0 0.5rem 0;">Tailored CV Text</h5>
+                                    <div style="background: rgba(0,0,0,0.25); padding: 1rem; border-radius: 6px; border: 1px solid rgba(255,255,255,0.03); max-height: 150px; overflow-y: auto; white-space: pre-wrap; font-size: 0.8rem; line-height: 1.4; color: rgba(255,255,255,0.7);">${app.generated_cv}</div>
+                                </div>
+                                <div>
+                                    <h5 style="color: #fff; font-size: 0.8rem; margin: 0 0 0.5rem 0;">Tailored Cover Letter Text</h5>
+                                    <div style="background: rgba(0,0,0,0.25); padding: 1rem; border-radius: 6px; border: 1px solid rgba(255,255,255,0.03); max-height: 150px; overflow-y: auto; white-space: pre-wrap; font-size: 0.8rem; line-height: 1.4; color: rgba(255,255,255,0.7);">${app.generated_cover_letter}</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            ` : '';
+
             return `
                 <div class="app-item" id="app-${app.id}">
                     <div class="app-header">
@@ -289,14 +361,70 @@
                             ${iconText} ${statusText}
                         </span>
                     </div>
-                    ${app.status !== 'draft' ? `
-                        <div class="app-downloads">
-                            ${cvPdf} ${cvDocx} ${clPdf} ${clDocx}
-                        </div>
-                    ` : ''}
+                    ${expandedPanel}
                 </div>
             `;
         }).join('');
+    }
+
+    // Toggle details expansion
+    function toggleDetails(appId) {
+        const panel = document.getElementById(`details-${appId}`);
+        const chevron = document.getElementById(`chevron-${appId}`);
+        if (panel.style.display === 'none') {
+            panel.style.display = 'block';
+            chevron.classList.replace('fa-chevron-down', 'fa-chevron-up');
+        } else {
+            panel.style.display = 'none';
+            chevron.classList.replace('fa-chevron-up', 'fa-chevron-down');
+        }
+    }
+
+    // Switch tab inside details panel
+    function switchTab(evt, tabId) {
+        const panel = evt.currentTarget.closest('.details-panel');
+        
+        // Hide all sibling tab contents
+        const contents = panel.querySelectorAll('.tab-content');
+        contents.forEach(content => content.style.display = 'none');
+        
+        // Reset styles for all sibling links
+        const tabLinks = panel.querySelectorAll('.tab-link');
+        tabLinks.forEach(link => {
+            link.classList.remove('active');
+            link.style.color = 'rgba(255,255,255,0.6)';
+            link.style.background = 'none';
+        });
+        
+        // Activate current tab
+        document.getElementById(tabId).style.display = 'block';
+        evt.currentTarget.classList.add('active');
+        evt.currentTarget.style.color = '#fff';
+        evt.currentTarget.style.background = 'rgba(255,255,255,0.08)';
+    }
+
+    // Copy subject + body to clipboard
+    function copyToClipboard(evt, appId) {
+        const subjectText = document.getElementById(`subject-${appId}`).textContent;
+        const bodyText = document.getElementById(`body-${appId}`).textContent;
+        const textToCopy = `Subject: ${subjectText}\n\n${bodyText}`;
+        
+        navigator.clipboard.writeText(textToCopy).then(() => {
+            const btn = evt.currentTarget;
+            if (btn) {
+                const origHtml = btn.innerHTML;
+                btn.innerHTML = '<i class="fa-solid fa-check"></i> Copied!';
+                btn.style.borderColor = '#2ecc71';
+                btn.style.color = '#2ecc71';
+                setTimeout(() => {
+                    btn.innerHTML = origHtml;
+                    btn.style.borderColor = 'var(--accent)';
+                    btn.style.color = 'var(--accent)';
+                }, 2000);
+            }
+        }).catch(err => {
+            console.error('Failed to copy text: ', err);
+        });
     }
 
     // Polling function for active draft items

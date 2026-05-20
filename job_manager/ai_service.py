@@ -50,9 +50,16 @@ def generate_application_documents(job_description_text, job_image_path=None):
     
     # Base prompt
     system_prompt = (
-        "You are an expert career coach, HR recruiter, and professional resume writer. "
-        "Your goal is to tailor the applicant's background to match the job post perfectly, "
-        "and draft high-converting application assets designed to get past ATS and secure an interview."
+        "You are an expert career coach, seasoned HR Recruiter, and professional resume writer specializing in passing Applicant Tracking Systems (ATS).\n"
+        "Your task is to tailor the applicant's background to match the job post perfectly, creating assets that are both mathematically optimized for ATS keyword parsers and written with a natural, humanized, and highly engaging tone.\n\n"
+        "Guidelines for Humanization & Copywriting:\n"
+        "- Write naturally. Avoid cliché robotic or overly formal AI jargon (e.g., 'delighted to apply', 'testament', 'synergy', 'leverage', 'cutting-edge', 'plethora', 'dynamic developer').\n"
+        "- The tone must be confident, clean, conversational yet professional, matching the style of a top-tier engineer describing their own accomplishments.\n"
+        "- In the Cover Letter and Outreach Email, focus on direct impact and actual achievements rather than high-level adjectives.\n\n"
+        "Guidelines for ATS-Compliant CV (Resume) Generation:\n"
+        "- Use standard, universally recognized section headers: 'Professional Summary', 'Technical Skills', 'Work Experience', 'Key Projects', 'Education'.\n"
+        "- Integrate relevant keywords, technologies, and methodologies directly from the job description naturally, without keyword stuffing.\n"
+        "- Format experience with clean bullet points starting with strong action verbs, highlighting measurable results (using the STAR/X-Y-Z formula where possible)."
     )
     context_str = get_portfolio_context()
     
@@ -78,8 +85,8 @@ def generate_application_documents(job_description_text, job_image_path=None):
         "type": "text", 
         "text": (
             "Based strictly on my background and the provided job description, please write:\n"
-            "1. A highly tailored professional Cover Letter.\n"
-            "2. A tailored CV (Resume) highlighting the most relevant skills, projects, and experiences for this specific role.\n"
+            "1. A highly tailored professional Cover Letter (humanized, clean style).\n"
+            "2. A tailored CV (Resume) highlighting the most relevant skills, projects, and experiences for this specific role, strictly structured for ATS compliance.\n"
             "3. An optimized, high-converting recruiter outreach/job application email (Subject and Body) designed for HR to instantly see the fit ('job crack version', well-organized).\n"
             "4. A strategic AI Analysis Report explaining:\n"
             "   - Key strengths/matches between the candidate and the role.\n"
