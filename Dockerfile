@@ -14,7 +14,7 @@ RUN apt-get update && apt-get install -y \
     pkg-config \
     libcairo2-dev \
     gcc \
-    cairo-bin \
+    netcat-openbsd \
     && rm -rf /var/lib/apt/lists/*
 
 # Install python dependencies
