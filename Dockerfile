@@ -1,32 +1,53 @@
-FROM python:3.12-slim
+# =========================
+# 1. BUILDER STAGE
+# =========================
+FROM python:3.12-slim AS builder
 
-# Set environment variables
-ENV PYTHONDONTWRITEBYTECODE 1
-ENV PYTHONUNBUFFERED 1
-
-# Set work directory
 WORKDIR /app
 
-# Install system dependencies
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONUNBUFFERED=1
+
+# System deps ONLY for build
 RUN apt-get update && apt-get install -y \
     build-essential \
     libpq-dev \
     pkg-config \
     libcairo2-dev \
     gcc \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install dependencies in venv-style isolation
+COPY requirements.txt .
+
+RUN pip install --upgrade pip \
+    && pip wheel --no-cache-dir --wheel-dir /wheels -r requirements.txt
+
+
+# =========================
+# 2. RUNTIME STAGE
+# =========================
+FROM python:3.12-slim
+
+WORKDIR /app
+
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONUNBUFFERED=1
+
+# Runtime dependencies ONLY (lighter)
+RUN apt-get update && apt-get install -y \
+    libpq5 \
+    libcairo2 \
     netcat-openbsd \
     && rm -rf /var/lib/apt/lists/*
 
-# Install python dependencies
-COPY requirements.txt /app/
-RUN pip install --upgrade pip
-RUN pip install -r requirements.txt
+# Copy wheels and install
+COPY --from=builder /wheels /wheels
+RUN pip install --no-cache /wheels/*
 
 # Copy project
-COPY . /app/
+COPY . .
 
-# Make the entrypoint script executable
 RUN chmod +x /app/entrypoint.sh
 
-# Run the entrypoint script
 ENTRYPOINT ["/app/entrypoint.sh"]

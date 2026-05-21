@@ -2,45 +2,32 @@
 
 set -e
 
-echo "======================================="
-echo "Starting Django Application..."
-echo "======================================="
+echo "🚀 Starting Django production container..."
 
-# Wait for PostgreSQL
-echo "Waiting for PostgreSQL..."
-
+# Wait for DB
+echo "⏳ Waiting for database..."
 while ! nc -z db 5432; do
   sleep 1
 done
 
-echo "PostgreSQL started"
+echo "✅ Database connected"
 
-# Apply migrations
-echo "======================================="
-echo "Applying database migrations..."
-echo "======================================="
-
+# Migrate
+echo "📦 Running migrations..."
 python manage.py migrate --noinput
 
-# Collect static files
-echo "======================================="
-echo "Collecting static files..."
-echo "======================================="
-
+# Static files
+echo "🎨 Collecting static files..."
 python manage.py collectstatic --noinput
 
-# Optional: Create superuser automatically
-# python manage.py createsuperuser --noinput || true
-
-echo "======================================="
-echo "Starting Gunicorn Server..."
-echo "======================================="
+# Start server
+echo "🔥 Starting Gunicorn..."
 
 exec gunicorn core.wsgi:application \
     --bind 0.0.0.0:8000 \
     --workers 3 \
-    --threads 2 \
+    --threads 4 \
     --timeout 120 \
     --access-logfile - \
     --error-logfile - \
-    --log-level info
+    --log-level warning
