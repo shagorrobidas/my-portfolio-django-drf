@@ -1,8 +1,8 @@
 from django.urls import path, include
-from rest_framework.routers import DefaultRouter
 from blog.api.views import PostViewSet, CategoryViewSet
+from rest_framework import routers
 
-router = DefaultRouter()
+router = routers.DefaultRouter()
 router.register(r'posts', PostViewSet, basename='posts')
 router.register(r'blog-categories', CategoryViewSet, basename='blog-categories')
 
