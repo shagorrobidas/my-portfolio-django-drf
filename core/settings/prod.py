@@ -24,9 +24,16 @@ ALLOWED_HOSTS = [
 ]
 
 CORS_ALLOWED_ORIGINS = [
-    "https://shagorrobidas.dev",
-    "https://www.shagorrobidas.dev",
+    "http://shagorrobidas.dev",
+    "http://www.shagorrobidas.dev",
 ]
+
+CSRF_TRUSTED_ORIGINS = [
+    "http://shagorrobidas.dev",
+    "http://www.shagorrobidas.dev",
+]
+
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 CSRF_COOKIE_SECURE = True
 SESSION_COOKIE_SECURE = True
