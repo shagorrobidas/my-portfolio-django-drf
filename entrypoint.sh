@@ -25,9 +25,11 @@ echo "🔥 Starting Gunicorn..."
 
 exec gunicorn core.wsgi:application \
     --bind 0.0.0.0:8000 \
-    --workers 3 \
-    --threads 4 \
+    --workers 2 \
+    --threads 2 \
     --timeout 120 \
+    --max-requests 500 \
+    --max-requests-jitter 50 \
     --access-logfile - \
     --error-logfile - \
     --log-level warning

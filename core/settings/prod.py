@@ -31,6 +31,10 @@ CORS_ALLOWED_ORIGINS = [
 CSRF_TRUSTED_ORIGINS = [
     "http://shagorrobidas.dev",
     "http://www.shagorrobidas.dev",
+    "https://shagorrobidas.dev",
+    "https://www.shagorrobidas.dev",
+    "http://51.20.17.15",
+    "https://51.20.17.15",
 ]
 
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
