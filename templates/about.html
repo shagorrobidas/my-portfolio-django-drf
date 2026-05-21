@@ -16,27 +16,31 @@
         <!-- Services will be loaded here -->
     </div>
 
-    <div class="section-title">Testimonials</div>
-    <div class="slider-wrap">
-        <div class="slider">
-            <div class="track" id="track">
-                <!-- Testimonials will be loaded here -->
+    <div id="testimonials-section" style="display: none;">
+        <div class="section-title">Testimonials</div>
+        <div class="slider-wrap">
+            <div class="slider">
+                <div class="track" id="track">
+                    <!-- Testimonials will be loaded here -->
+                </div>
             </div>
-        </div>
-        <div class="scroll-track">
-            <div class="scroll-bar" id="testimonial-scroll"></div>
+            <div class="scroll-track">
+                <div class="scroll-bar" id="testimonial-scroll"></div>
+            </div>
         </div>
     </div>
 
-    <div class="section-title">Clients</div>
-    <div class="clients-wrap">
-        <div class="clients-slider">
-            <div class="clients-track" id="clients-track">
-                <!-- Clients will be loaded here -->
+    <div id="clients-section" style="display: none;">
+        <div class="section-title">Clients</div>
+        <div class="clients-wrap">
+            <div class="clients-slider">
+                <div class="clients-track" id="clients-track">
+                    <!-- Clients will be loaded here -->
+                </div>
             </div>
-        </div>
-        <div class="scroll-track">
-            <div class="scroll-bar" id="clients-scroll"></div>
+            <div class="scroll-track">
+                <div class="scroll-bar" id="clients-scroll"></div>
+            </div>
         </div>
     </div>
 </section>
@@ -136,7 +140,8 @@
         }
 
         const testimonials = await fetchAPI('testimonials');
-        if (testimonials) {
+        if (testimonials && testimonials.length > 0) {
+            document.getElementById('testimonials-section').style.display = 'block';
             const track = document.getElementById('track');
             track.innerHTML = testimonials.map((t, index) => `
         <div class="tcard" onclick='openTestimonialModal(${JSON.stringify(t)})'>
@@ -153,7 +158,8 @@
         }
 
         const clients = await fetchAPI('clients');
-        if (clients) {
+        if (clients && clients.length > 0) {
+            document.getElementById('clients-section').style.display = 'block';
             document.getElementById('clients-track').innerHTML = clients.map(c => `
         <div class="client-item"><img src="${c.logo}" alt="${c.name}"></div>
       `).join('');
