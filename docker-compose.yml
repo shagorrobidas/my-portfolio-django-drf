@@ -5,9 +5,9 @@ services:
     env_file:
       - .env
     environment:
-      - POSTGRES_DB=${DB_NAME:-my_portfolio}
-      - POSTGRES_USER=${DB_USER:-my_portfolio}
-      - POSTGRES_PASSWORD=${DB_PASSWORD:-my_portfolio}
+      POSTGRES_DB: ${DB_NAME:-my_portfolio}
+      POSTGRES_USER: ${DB_USER:-my_portfolio}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-my_portfolio}
     volumes:
       - postgres_data:/var/lib/postgresql/data
     ports:
@@ -19,7 +19,7 @@ services:
     env_file:
       - .env
     environment:
-      - DJANGO_SETTINGS_MODULE=core.settings.prod
+      DJANGO_SETTINGS_MODULE: core.settings.prod
     volumes:
       - .:/app
       - static_volume:/app/staticfiles
@@ -30,38 +30,21 @@ services:
       - db
 
   nginx:
-  image: nginx:1.25-alpine
-  restart: always
-  ports:
-    - "80:80"
-    - "443:443"
-  volumes:
-    - ./nginx/conf.d:/etc/nginx/conf.d
-    - static_volume:/app/staticfiles
-    - media_volume:/app/media
-    - ./certbot/www:/var/www/certbot
-    - ./certbot/conf:/etc/letsencrypt
-  depends_on:
-    - web
+    image: nginx:1.25-alpine
+    restart: always
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/conf.d:/etc/nginx/conf.d
+      - static_volume:/app/staticfiles
+      - media_volume:/app/media
+      - ./certbot/www:/var/www/certbot
+      - ./certbot/conf:/etc/letsencrypt
+    depends_on:
+      - web
 
 volumes:
   postgres_data:
   static_volume:
   media_volume:
-
-    #   certbot:
-    #     image: certbot/certbot
-    #     restart: always
-    #     volumes:
-    #       - ./certbot/www:/var/www/certbot
-    #       - ./certbot/conf:/etc/letsencrypt
-    #     depends_on:
-    #       - nginx
-    #     command: >
-    #       certonly --webroot -w /var/www/certbot
-    #       -d shagorrobidas.dev -d www.shagorrobidas.dev
-    #       --email [EMAIL_ADDRESS]
-    #       --agree-tos
-    #       --non-interactive
-    #       --rsa-key-size 4096
-    #       --staging
