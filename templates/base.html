@@ -165,32 +165,65 @@
             </div>
         </aside>
 
-        <!-- MAIN -->
-        <main class="main">
-            <div class="topbar">
-                <div class="nav" id="nav">
-                    <a href="{% url 'home' %}"
-                        class="{% if request.resolver_match.url_name == 'home' %}active{% endif %}">About</a>
-                    <a href="{% url 'resume' %}"
-                        class="{% if request.resolver_match.url_name == 'resume' %}active{% endif %}">Resume</a>
-                    <a href="{% url 'portfolio' %}"
-                        class="{% if request.resolver_match.url_name == 'portfolio' %}active{% endif %}">Portfolio</a>
-                    <a href="{% url 'blog' %}"
-                        class="{% if request.resolver_match.url_name == 'blog' %}active{% endif %}">Blog</a>
-                    <a href="{% url 'contact' %}"
-                        class="{% if request.resolver_match.url_name == 'contact' %}active{% endif %}">Contact</a>
-                    <a href="{% url 'job_apply' %}"
-                        class="{% if request.resolver_match.url_name == 'job_apply' %}active{% endif %}">AI</a>
-                </div>
+        <!-- DESKTOP TOP / MOBILE BOTTOM NAV -->
+        <div class="topbar">
+            <div class="nav" id="nav">
+                <a href="{% url 'home' %}"
+                    class="{% if request.resolver_match.url_name == 'home' %}active{% endif %}">About</a>
+                <a href="{% url 'resume' %}"
+                    class="{% if request.resolver_match.url_name == 'resume' %}active{% endif %}">Resume</a>
+                <a href="{% url 'portfolio' %}"
+                    class="{% if request.resolver_match.url_name == 'portfolio' %}active{% endif %}">Portfolio</a>
+                <a href="{% url 'blog' %}"
+                    class="{% if request.resolver_match.url_name == 'blog' %}active{% endif %}">Blog</a>
+                <a href="{% url 'contact' %}"
+                    class="{% if request.resolver_match.url_name == 'contact' %}active{% endif %}">Contact</a>
+                <a href="{% url 'job_apply' %}"
+                    class="{% if request.resolver_match.url_name == 'job_apply' %}active{% endif %}">AI</a>
             </div>
+        </div>
 
-            <div class="content">
+        <!-- MAIN CONTENT -->
+        <main class="main">
+
+            <div class="content" id="content-section">
                 {% block content %}{% endblock %}
             </div>
         </main>
     </div>
 
     <script>
+        // Mobile nav: scroll to content when clicking nav links
+        (function() {
+            const isMobile = () => window.innerWidth <= 1020;
+
+            // On page load, if #content hash exists and mobile, scroll to main container
+            if (isMobile() && window.location.hash === '#content') {
+                window.addEventListener('load', () => {
+                    const mainContainer = document.querySelector('.main');
+                    if (mainContainer) {
+                        setTimeout(() => {
+                            mainContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                        }, 400);
+                    }
+                });
+            }
+
+            // Intercept nav clicks on mobile to add #content hash
+            document.addEventListener('DOMContentLoaded', () => {
+                document.querySelectorAll('.nav a').forEach(link => {
+                    link.addEventListener('click', (e) => {
+                        if (isMobile()) {
+                            e.preventDefault();
+                            const url = new URL(link.href, window.location.origin);
+                            url.hash = 'content';
+                            window.location.href = url.toString();
+                        }
+                    });
+                });
+            });
+        })();
+
         const API_BASE = '/api/v1';
 
         async function fetchAPI(endpoint) {
